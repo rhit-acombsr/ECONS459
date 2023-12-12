@@ -20,7 +20,8 @@ print("good 1")
 # y = data["Spot"]
 
 #Basic
-data = pd.read_csv("PreliminaryResults v1 - CLQ22.csv")
+# data = pd.read_csv("PreliminaryResults v1 - CLQ22.csv")
+data = pd.read_csv("Reproduction of Results - Reproduced oil_3.csv")
 X = data[['ln(Ft,t-k) - ln(St-k)']]
 Y = data[["ln(St) - ln(St-k)"]]
 y = data["ln(St) - ln(St-k)"]
