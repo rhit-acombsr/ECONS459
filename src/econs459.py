@@ -12,9 +12,9 @@ def get_data():
     data = pd.read_csv(path)
     return data
 
-def save_results(spacer_line_length,sumOut,tOut,white_test):
+def save_results(path_out, spacer_line_length,sumOut,tOut,white_test):
     #Save Regression Results to a text file
-    file = open("Regression_Output.txt", "w")
+    file = open(path_out, "w")
     file.write((spacer_line_length*'_')+'\nSummary:\n'+(spacer_line_length*'_')+'\n')
     file.write(sumOut)
     file.write('\n\n'+(spacer_line_length*'_')+'\nT-Test:\n'+(spacer_line_length*'_')+'\n')
@@ -33,8 +33,8 @@ def save_results(spacer_line_length,sumOut,tOut,white_test):
     file.write(str(white_test[3]))
     file.close()
 
-def save_residuals(residuals):
-    file = open("Residuals.csv", "w") 
+def save_residuals(path_out, residuals):
+    file = open(path_out, "w") 
     file.write(residuals.to_csv()) 
     file.close()
 
@@ -60,8 +60,8 @@ def plot_results(model,test,predictions,residuals,Y):
     # Display plots
     plt.show()
 
-def run_regression(max_lags):
-    data = get_data()
+def run_regression(data, max_lags):
+    
     X = data[['ln(Ft,t-k) - ln(St-k)']]
     Y = data[["ln(St) - ln(St-k)"]]
     y = data["ln(St) - ln(St-k)"]
@@ -84,14 +84,17 @@ def run_regression(max_lags):
 
     #Save Regression Results to a text file:
     spacer_line_length = 90
-    save_results(spacer_line_length,sumOut,tOut,white_test)
+    save_results("Regression_Output.txt", spacer_line_length,sumOut,tOut,white_test)
 
     # Write residuals to a CSV file:
-    # save_residuals(residuals)
+    # save_residuals("Residuals.csv", residuals)
 
     # Plot results via matplotlib
     # plot_results(model_nw,test,predictions,residuals,Y)
     print("Done.")
 
-max_lags = 12
-run_regression(max_lags)
+k = 12
+max_lags = 2*(k-1)
+data = get_data()
+run_regression(data, max_lags)
+
