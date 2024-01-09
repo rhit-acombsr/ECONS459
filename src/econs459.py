@@ -133,12 +133,12 @@ def create_regression_model(data, max_lags):
     return model_nw
 
 
-# k = 12
-# max_lags = 2*(k-1)
-# data = get_data()
-# run_regression(data, max_lags)
+k = 3
+max_lags = 2*(k-1)
+data = get_data()
+run_regression(data, max_lags)
 
-datafiles_dict = read_csv_files()
+# datafiles_dict = read_csv_files()
 
 # print(str(type(datafiles_dict))) #<class 'dict'>
 
@@ -150,18 +150,19 @@ datafiles_dict = read_csv_files()
 #     print("key = " + str(key))
 #     print("value type = " + str(type(datafiles_dict[key])))
 
-for value in datafiles_dict.values():
-    model = create_regression_model(value, 12)
-    # print(str(type(model))) # <class 'statsmodels.regression.linear_model.RegressionResultsWrapper'>
-    # print(str(type(model.summary()))) # <class 'statsmodels.iolib.summary.Summary'>
-    # print(str(model.summary())) # 
-    model_summary = model.summary()
-    # model_summary_csv = model_summary.as_csv()
-    # print(model_summary_csv) # 
-    # print(str(model.params)) # output estimates!
-    # print(str(type(model.params))) # <class 'pandas.core.series.Series'>
-    # print(str(type(model.params.array))) # <class 'pandas.core.arrays.numpy_.NumpyExtensionArray'>
-    # print(str(type(model.params.array.tolist()))) # <class 'list'>
-    # print(str(model.params.array.tolist())) # [0.07732635592781496, 0.7412839707406351] <- alpha & beta!
-    # print(str(type(model.bse))) # <class 'pandas.core.series.Series'>
-    print(str(model.bse.array.tolist())) # [0.045315039486414375, 0.2933164407833197] <- stderr for alpha & beta!
+# for value in datafiles_dict.values():
+#     model = create_regression_model(value, 12)
+#     # print(str(type(model))) # <class 'statsmodels.regression.linear_model.RegressionResultsWrapper'>
+#     # print(str(type(model.summary()))) # <class 'statsmodels.iolib.summary.Summary'>
+#     # print(str(model.summary())) # 
+#     model_summary = model.summary()
+#     # model_summary_csv = model_summary.as_csv()
+#     # print(model_summary_csv) # 
+#     # print(str(model.params)) # output estimates!
+#     # print(str(type(model.params))) # <class 'pandas.core.series.Series'>
+#     # print(str(type(model.params.array))) # <class 'pandas.core.arrays.numpy_.NumpyExtensionArray'>
+#     # print(str(type(model.params.array.tolist()))) # <class 'list'>
+#     # print(str(model.params.array.tolist())) # [0.07732635592781496, 0.7412839707406351] <- alpha & beta!
+#     # print(str(type(model.bse))) # <class 'pandas.core.series.Series'>
+#     print(str(model.bse.array.tolist())) # [0.045315039486414375, 0.2933164407833197] <- stderr for alpha & beta!
+
