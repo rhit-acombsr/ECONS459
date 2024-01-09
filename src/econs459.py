@@ -133,7 +133,7 @@ def create_regression_model(data, max_lags):
     return model_nw
 
 
-k = 3
+k = 12
 max_lags = 2*(k-1)
 data = get_data()
 run_regression(data, max_lags)
