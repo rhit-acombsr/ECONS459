@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import time
+import csv
 
 def save_as_html(response, filename):
     """
@@ -80,9 +82,27 @@ def get_data(response):
             cols = row.find_all('td')
             if len(cols) == 2:  # Ensure the row has two columns
                 data.append([col.text.strip() for col in cols])
-    return data[2:]
+    return data
 
-response = get_calendar_for(2020)
-data_out = get_data(response)
+def save_data(data_in,file_name):
+    # Preparing to write the data to a CSV file
+    csv_filename = file_name + ".csv"
+    with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(data_in)
+    return
+
+def get_all_data():
+    for year in [2020,2014,2008,2002,1996,1990,1984]:
+        response = get_calendar_for(year)
+        data_out = get_data(response)
+        save_data(data_out,str(year))
+        time.sleep(1)
+        
+
+# response = get_calendar_for(2020)
+# data_out = get_data(response)
 # print(data_out)
 # save_as_html(response, "test.html")
+
+get_all_data()

@@ -24,11 +24,11 @@ if table:
 # print(data[2:])
 print(data[3])
 
-# # Preparing to write the data to a CSV file
-# csv_filename = "extracted_table.csv"
-# with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
-#     writer = csv.writer(csvfile)
-#     writer.writerows(data)
+# Preparing to write the data to a CSV file
+csv_filename = "extracted_table.csv"
+with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerows(data)
 
 # csv_filename
 
