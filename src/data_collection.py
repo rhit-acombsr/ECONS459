@@ -3,7 +3,7 @@ import requests
 import tkinter as tk
 from tkinter import filedialog
 
-def download_futures_data():
+def download_futures_data(output_directory_path):
     cookies = {
         'ak_bmsc': '8B98D98F4383E3C03F63FBAA95471769~000000000000000000000000000000~YAAQHMIcuJij4WeMAQAAnzXL7haNoOJ3LhQrvQ+7UA7tBcUtgDPDyeeZ38hnSy7np5eCh7OnnWFnvNAqPpb8lHqKrkIr6KnCgG4UJusA7qAjZh5L3ZNcefV4dYFLnikOZ6ZsPm/qlJHprkHSZXB9GFlkLl0wO1yCkvP9E6IAJzS7gVXorKH2s9+tMZYAXxIlMmXyRYfKtIdT92RTwQw90pfzMVIwRlQOr9JcfW+/R1hdEv1EpRgXJl1hTg595cFwLRyngJczsU4dgcgVAojm3IfSweL3hVaO6LKpVsy2sARQImGDsckyBkBXBJG2O9fliODRohsNbp/9UXZh/jHp91kdAW/pyFWFbrLZASjV9/Juft1AMKIh7bCN5mMm',
         'bm_mi': '068BCE439C8DDC698826CC3C0EEACCD6~YAAQHMIcuJuj4WeMAQAAIzbL7haWCOA7Vr7/1X8+VHgMS6OGmsmm45fop4hpi3vtLFSgEpmj1381ixaUg46ed1pmxUVlS88g6lPknTOJxFEW80yurTTDLwniGnzZGqOPJicK0jtmlTXWXabZVFrxCKxKF0MALt5jPH5vxCeCKnvw+86tQQIax/iFBuNNf7UpUTfY71AeDGfUGkhPYYlHCIeacq66HS60Y5wZ9oOMyRSHRCVpJiEcvRB4kawOfXv8SsBDMwpnu2lj/5skCdIni7lBF353stXHH/7T2RWT2Er0vt7zlNeZi0sAR8lhasojXSvmTCDFFzbzYNQk1u/umT2FKKPL+9FDPRU4z0D150tv~1',
@@ -29,9 +29,10 @@ def download_futures_data():
     }
     
     response = requests.get('https://www.eia.gov/dnav/pet/xls/PET_PRI_FUT_S1_D.xls', cookies=cookies, headers=headers)
-    return response
+    # return response
+    save_xls_from_request(response, 'PET_PRI_FUT_S1_D.xls', output_directory_path)
 
-def download_spot_data():
+def download_spot_data(output_directory_path):
     cookies = {
         'ak_bmsc': '8B98D98F4383E3C03F63FBAA95471769~000000000000000000000000000000~YAAQHMIcuJij4WeMAQAAnzXL7haNoOJ3LhQrvQ+7UA7tBcUtgDPDyeeZ38hnSy7np5eCh7OnnWFnvNAqPpb8lHqKrkIr6KnCgG4UJusA7qAjZh5L3ZNcefV4dYFLnikOZ6ZsPm/qlJHprkHSZXB9GFlkLl0wO1yCkvP9E6IAJzS7gVXorKH2s9+tMZYAXxIlMmXyRYfKtIdT92RTwQw90pfzMVIwRlQOr9JcfW+/R1hdEv1EpRgXJl1hTg595cFwLRyngJczsU4dgcgVAojm3IfSweL3hVaO6LKpVsy2sARQImGDsckyBkBXBJG2O9fliODRohsNbp/9UXZh/jHp91kdAW/pyFWFbrLZASjV9/Juft1AMKIh7bCN5mMm',
         'bm_mi': '068BCE439C8DDC698826CC3C0EEACCD6~YAAQdWDcF1sLNF6MAQAAAIXT7hbbtjiMnSzUnMVOATmJ2WU482VZ2rDGVq/GbR1CDDRSaXaIQCBbZSXwJd55yAqaNNeKqjsMUpcYoGmny4msY6EcXA+zlZ64A596Qt3f1mVmtyLHx0hYyFGTG+YQoF1TLlCBEFfhs2wJEYTMxQbWgSo/K4vpE7MZrreKw+pKJ3cZtzJni85fqtzzO1ZUuwL8glsiwJWDuyLyomRzRRbsb0BBxOXQVlBhcMjxKl4L3VU/M+eesZMVBpOkqysSx7EQ6XfffM0Z7UKI9fHgpvdW6CIct3B1PWqYKiNy/E4ysJLASCNET0rVP+zgFMsU7gXZH8yZ1bbK~1',
@@ -57,9 +58,10 @@ def download_spot_data():
     }
     
     response = requests.get('https://www.eia.gov/dnav/pet/xls/PET_PRI_SPT_S1_D.xls', cookies=cookies, headers=headers)
-    return response
+    # return response
+    save_xls_from_request(response, 'PET_PRI_SPT_S1_D.xls', output_directory_path)
 
-def download_futures_calendar():
+def download_futures_calendar(output_directory_path):
     cookies = {
         'kppid': '4wqBdMFztYs',
         '__Secure-Fgp': 'BD9FFA09797CF1C42B2B05914FB324DE0B903FDBC1A5CA45BF0A64217E1B1ED6459BEE60C24C6D2FF41D22D46222C5EF8823',
@@ -101,9 +103,10 @@ def download_futures_calendar():
         cookies=cookies,
         headers=headers,
     )
-    return response
+    # return response
+    save_xls_from_request(response, 'ProductCalendar.xls', output_directory_path)
 
-def save_xls_from_request(request, output_directory_path):
+def save_xls_from_request(request, filename, output_directory_path):
     # Check if the request was successful
     if request.status_code == 200:
         # Create the output directory if it doesn't exist
@@ -111,7 +114,7 @@ def save_xls_from_request(request, output_directory_path):
             os.makedirs(output_directory_path)
         
         # Define the path for the output file
-        output_file_path = os.path.join(output_directory_path, 'futures_data.xls')
+        output_file_path = os.path.join(output_directory_path, filename)
         
         # Write the content to an Excel file
         with open(output_file_path, 'wb') as file:
@@ -123,7 +126,7 @@ def save_xls_from_request(request, output_directory_path):
 # Usage example:
 data_output_directory_path = "C:\_Data_Out"
 # data_output_directory_path = filedialog.askdirectory()
-# print(data_output_directory_path)
-# request = download_futures_data()
-request = download_futures_calendar()
-save_xls_from_request(request,data_output_directory_path)
+download_futures_data(data_output_directory_path)
+download_spot_data(data_output_directory_path)
+request = download_futures_calendar(data_output_directory_path)
+print("All done!")
