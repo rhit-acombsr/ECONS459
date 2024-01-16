@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Expiry Calendar</title>
+    <link rel="shortcut icon" href='/favicon.ico' />
+    
+    
+
+        <script src="/Scripts/jquery-1.8.3.min.js" type="text/javascript"></script>
+        <link href="/Content/Site.css?ver=20211203" rel="stylesheet" type="text/css" />
+
+        <link href="/Content/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+        <link href="/Content/UserContent.css" rel="stylesheet" type="text/css" />
+
+        <script src="/Scripts/jquery-ui-1.9.0.min.js" type="text/javascript"></script>
+        <script src="/Scripts/modernizr-2.6.2.js" type="text/javascript"></script>
+        <script src="/Scripts/hoverIntent.js" type="text/javascript"></script>
+
+    
+        <script src="/Scripts/MyScript.js" type="text/javascript"></script>
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.24/mmenu.min.css" integrity="sha512-gIn3+aW4xrkqoIvXsJ7F3woKfU+KTvEzXm0IXKmWqXZ8oyD9TfzFEdGDMF0egqto86E91yZVPzoa82a/dgSMig==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="/Content/Menu.css?ver=20221102" rel="stylesheet" type="text/css" />
+
+    <style>
+        .spinner {
+            z-index: 1003;
+            background: rgba( 255, 255, 255, .8 ) url("/Images/Spinner-1s-200px.gif") 50% 50% no-repeat;
+            width: 100%; height: 100%; position:absolute; left:0px; top:0px; overflow:none
+        }
+    </style>
+    
+
+<!-- google-analytics start -->
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-E23DDYGEFF"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+
+            gtag('config', 'G-E23DDYGEFF');
+        </script>
+<!-- google-analytics end -->
+    
+<!-- pardot-analytics start -->
+    <script type="text/javascript">
+        piAId = '853553';
+        piCId = '7003';
+        piHostname = 'pi.pardot.com';
+        (function() {
+            function async_load(){
+                var s = document.createElement('script'); s.type = 'text/javascript';
+                s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.js';
+                var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);
+            }
+            if(window.attachEvent) { window.attachEvent('onload', async_load); }
+            else { window.addEventListener('load', async_load, false); }
+        })();
+    </script>
+<!-- pardot-analytics end -->
+    <script type="text/javascript">
+        var _egpsglob = {
+            basepath: '/', 
+            breadcrumb: []  
+        };
+
+        $(document).ready(function () {
+            // Tiny jQuery Plugin
+            // by Chris Goodchild
+            $.fn.exists = function (callback) {
+                var args = [].slice.call(arguments, 1);
+
+                if (this.length) {
+                    callback.call(this, args);
+                }
+
+                return this;
+            };
+
+            
+            $(window).resize(function () {
+                $('div[class="footer anonfooter"]').exists(function () {
+                    $("footer").width($("#main").width());
+                });
+            }).resize();
+
+            $('#searchbox').exists(function () {
+
+                $.fn.ToggleInputValue = function () {
+                    return $(this).each(function () {
+                        var Input = $(this);
+                        var default_value = Input.val();
+
+                        Input.focus(function () {
+                            Input.attr("style", "color:black;");
+                            if (Input.val() == default_value) Input.val("");
+                            else if (Input.val().length >= 3) Input.searchcomplete("search");
+                        }).blur(function () {
+                            Input.attr("style", "color:#8C8C8C;");
+                            if (Input.val().length == 0) Input.val(default_value);
+                        });
+                    });
+                }
+
+                $('#searchbox').ToggleInputValue();
+
+                $.widget("custom.searchcomplete", $.ui.autocomplete, {
+                    _renderMenu: function (ul, items) {
+                        $.each(items, function (index, item) {
+                            return $("<li>")
+                            .append(item.link)
+                            .appendTo(ul);
+                        });
+                    }
+                });
+
+                $("#searchbox").searchcomplete({
+                    source: function(request, response) {
+                        if (request.term && request.term.trim && request.term.trim().length < 3) response([{ label: "Searching", link: "Please enter 3 or more characters." }]);
+                        else {
+                            response([{ label: "Searching", link: "Search in progress..." }]);
+                            $.ajax({
+                                url: _egpsglob.basepath + "Research/" + "HeaderSearch",
+                                data: { term: request.term }
+                            })
+                            .done(function(data) {
+                                if (data.length > 0) {
+                                    if (data[0].label) {
+                                        response(data);
+                                    }
+                                    else {
+                                        response([{ label: "Not logged in.", link: "Your session has expired. Please log in again." }]);
+                                    }
+                                }
+                                else {
+                                    response([{ label: "No results.", link: "There were no results for your search. Please try again." }]);
+                                }
+                            })
+                            .fail(function() {
+                                response([{ label: "Error", link: "There was an error while searching, please try again." }]);
+                            });
+                        }
+                    },
+                    delay: 550
+                })
+            });
+        });
+    </script>
+</head>
+
+<body class="">
+
+    
+    <div>
+        <div class="page anonPage">
+            <header>
+                <div class="HeaderHolder anonHeaderHolder">
+                    <table id="anonheader" style="border-collapse: collapse">
+                        <tbody>
+                            <tr>
+                                <th id="logo">
+                                    <a href="/Home/Index"><img src="/Images/logobig.png" alt="Energy GPS LLC" id="compLogo" /></a>
+                                </th>
+                                    <th class="hideMobile" style="color:#4D4D4D;font-size:1em;letter-spacing:0.1pt;padding: 0px 0px 0px 10px;white-space:nowrap;text-align:left;width:1%;">
+                                        Energy Solutions -  Research, Trading and Management
+                                    </th>
+
+                                
+                                                                    <th id="breadcrumb">
+                                        <a href="/Home/Help">Contact Us</a> |&nbsp;
+                                    </th>
+                                <th id="logindisplay">
+                                        <a href="/Account/LogOn">Client Login</a>
+
+                                </th>
+                            </tr>
+                            <tr id="menu">
+                                <td id="mainmenu" colspan="6">
+                                    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.24/mmenu.min.js" integrity="sha512-cYB9HYeGzWUCQn/6ySuqjC5VwIHecuFIYdv8aQJ+CR6oXj7LJsvqMiInf4ZDq2e/1snDX6Q9k+9BbHae6KJtAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var scrollOnOpen = {
+            // id to scroll to
+            targetId: null,
+            // panel to apply scroll to (should already be open)
+            panelId: null,
+            // item to highlight
+            highlightId: null,
+
+            scroll: function (panel) {
+                // clear highlights
+                $("#vertical-menu a").removeClass("js-highlight");
+                $("#vertical-menu span").removeClass("js-highlight");
+
+                if (this.targetId == null) return;
+                var target = $("#" + this.targetId)[0];
+                if (target && typeof target.scrollIntoView === 'function') {
+                    target.scrollIntoView({ inline: "start" });
+
+                    // Since nav panel is sticky, need to scroll up to get header into view if not visible already.
+                    // Here we detect if the header is in full view or not (may be partway down page if located at bottom of panel.
+                    var clienty = target.getBoundingClientRect().y;
+
+                    // value of 36 will line up header and nav header perfectly (nav bar is 36px tall).
+                    // Here we go 10px up more to indicate that there are items above.
+                    if (clienty < 46) {
+                        var panel = $("#" + this.panelId)[0];
+                        panel.scrollTop -= 46 - clienty;
+                    }
+
+                    if (this.highlightId != null) {
+                        // handle case if item is a link to a webpage
+                        var highlightTarget = $("#menu-item-" + this.highlightId);
+                        if (highlightTarget.length == 0) {
+                            // handle case if item opens up a sub menu
+                            var highlightTarget = $('a[href="#menu-panel-' + this.highlightId + '"]');
+                        }
+                        if (highlightTarget.length == 0) {
+                            // handle case if item is a sub menu header
+                            var highlightTarget = $('#menu-header-' + this.highlightId);
+                        }
+                        if (highlightTarget.length > 0) {
+                            highlightTarget.addClass("js-highlight");
+                        }
+                    }
+                }
+            }
+        }
+
+        // changes root nav header on first open only.
+        var fixedRootNav = false;
+
+        var api = new Mmenu("#vertical-menu", {
+            "extensions": [
+                "position-front",
+                "pagedim-black",
+                "listview"
+            ],
+            "setSelected": {
+                "hover": true
+            },
+            // allow keyboard navigation of menu.
+            "keyboardNavigation": {
+                "enable": true,
+                "enhance": true
+            },
+            "hooks": {
+                // Note: these hooks are undocumented.
+                "open:before": () => {
+                    if (fixedRootNav) return;
+
+                    // change the root menu nav content.
+                    var rootNav = $("#menu-panel-root .mm-navbar .mm-navbar__title");
+                    var username = "";
+                    if (username !== null && username !== "") {
+                        // html encode the username via inserting it to an orphan div as text, then getting its html content.
+                        var htmlText = $('<div/>').text(username).html();
+                        rootNav.html("<span>Welcome, <span class='link-text'>" + htmlText + "</span></span>");
+                        rootNav.attr("href", "/Account/UserPrefs");
+                    }
+
+                    fixedRootNav = true;
+                },
+                "open:start": () => {
+                    scrollOnOpen.scroll()
+                },
+            }
+        });
+
+        // Opens the menu to the specific id given. replace '.' with '-' and ' ' with '_', as these characters are problematic with html selectors.
+        // For instance, NG-Lower_48 would open to the ng > lower 48 sub menu. These are mapped from Parent menu items in menu.config
+        // If highlightId is passed, item with this MenuItemKey will be highlighted in the menu. Only works if its a selectable item in the menu (ex a section header like "Power").
+        function openMenu(id, highlightId) {
+            if (api == null) return;
+
+            var levels = id.split("-");
+            // Opens specific sub-menu.
+            var panelId = null;
+            if (levels.length == 1) {
+                panelId = "menu-panel-root";
+            } else if (levels.length % 2 == 0) {
+                panelId = "menu-panel-" + id;
+            } else {
+                panelId = "menu-panel-" + levels.slice(0, -1).join("-");
+            }
+            // if menu isn't open, this doesn't have any visible effect. This causes this panel be pre-opened when we call api.open().
+            api.openPanel(document.querySelector("#" + panelId));
+
+            if (levels.length % 2 == 1 && levels[0] != "root") {
+                scrollOnOpen.targetId = "menu-header-" + id;
+                scrollOnOpen.panelId = panelId;
+            } else {
+                scrollOnOpen.targetId = null;
+                scrollOnOpen.panelId = null;
+            }
+            scrollOnOpen.highlightId = highlightId;
+
+            // There exists a race condition where (menu opened -> menu closed before fully opened -> menu close finishes -> menu open finishes),
+            // then menu will be unopenable. To resolve, we always close the menu before opening (this does nothing if properly closed, but resolves this bad state if present).
+            api.close();
+            api.open();
+        }
+
+        // bind each top menu item to open the appropriate menu panel/scroll to correct header
+        $("a[id^=\"top-menu-\"]").click(function() {
+            var id = $(this).attr('id').replace("top-menu-", "");
+            openMenu(id);
+        });
+
+        // emit event with function to open window, to allow subscribers to open web menu themselves.
+        const event = new CustomEvent(
+            "topMenu-init",
+            {
+                detail: {
+                    openMenu: openMenu
+                }
+            }
+        );
+        document.dispatchEvent(event);
+    });
+
+    function menuHighlight() {
+        // ex. ['Home', 'Market News']
+        var breadcrumb = _egpsglob.breadcrumb;
+
+        if (breadcrumb == null || breadcrumb == "") return;
+        $("ul#top-menu > li").each(function () {
+            var menuitem = $(this);
+            menuitem.children("a").each(function () {
+                //get the menu items text
+                var item = $(this).text().replace(/»/gi, '').replace(/^\s+|\s+$/g, '');
+                //highlight menu item if present in breadcrumb
+                for (var i = 0; i < breadcrumb.length; i++) {
+                    var crumbpart = breadcrumb[i];
+                    if (crumbpart == item) {
+                        menuitem.css("background-color", "#423021");
+                        return;
+                    }
+                }
+            });
+        });
+    }
+
+    $("title").ready(function () {
+        menuHighlight();
+    });
+</script>
+<ul id='top-menu'><li class='showMobile'><a id='top-menu-root' style='display: flex; align-items: center; cursor: pointer;'>    <img src='/Images/icons/menu.svg' alt='menu' style='height: 1em; object-position: 0px 0.2px;'>&nbspMenu</a></li><li class='hideMobile'><a href='/Home/Product'>Product</a></li><li class='hideMobile'><a href='/Home/Consulting'>Consulting</a></li><li class='hideMobile'><a href='/Home/Team'>Team</a></li><li class='hideMobile'><a href='/Home/About'>About Us</a></li><li class='hideMobile'><a id='top-menu-Tools' href='#' style='display: flex; align-items: center;'>    Tools&nbsp<img src='/Images/icons/caret.svg' alt='menu' style='height: 1em'></a></li></ul><nav id='vertical-menu'><ul id='menu-panel-root'><li><span id='menu-header-Pages'>Pages</span></li><li><a id='menu-item-Home-Product' href='/Home/Product'><img class='menuimage' src='/Images/icon_report.png'>Product</a></li><li><a id='menu-item-Home-Consulting' href='/Home/Consulting'><img class='menuimage' src='/Images/icon_report.png'>Consulting</a></li><li><a id='menu-item-Home-Team' href='/Home/Team'><img class='menuimage' src='/Images/icon_report.png'>Team</a></li><li><a id='menu-item-Home-About' href='/Home/About'><img class='menuimage' src='/Images/icon_report.png'>About Us</a></li><li><span id='menu-header-Tools'>Tools</span></li><li><a id='menu-item-HomeTools-ExpiryCalendar' href='/HomeTools/ExpiryCalendar'><img class='menuimage' src='/Images/icon_report.png'>Expiry Calendar</a></li><li><a id='menu-item-HomeTools-PowerCalendar' href='/HomeTools/PowerCalendar'><img class='menuimage' src='/Images/icon_report.png'>Power Calendar</a></li><li><a id='menu-item-HomeTools-SchCalendar' href='/HomeTools/SchCalendar'><img class='menuimage' src='/Images/icon_report.png'>Scheduling Calendar</a></li></ul></nav>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </header>
+            <section id="main" class="anon">
+                
+
+    <div class="PageTitle">Expiry Calendar</div>
+    <div><p>Futures and forward contract expiry calendar by product. Displays last trading day (expiration) for derivatives from CME Group and Intercontinental Exchange. </p></div>
+
+<form action="/HomeTools/ExpiryCalendar" method="post">    <table class='rpanel'>
+	<tr class='rpanelHead'>
+        <td colspan='2' style='font-weight:bold;'>Date Filter</td>
+    </tr>
+    <tr>
+        <td style='font-weight:bold'>Trade Start&nbsp;&nbsp;<input class="rfontbox" id="startDate" maxlength="10" name="startDate" size="10" style="width:auto" type="text" value="12/31/2020" /></td>
+        <td style='font-weight:bold'>Trade End&nbsp;&nbsp;<input class="rfontbox" id="endDate" maxlength="10" name="endDate" size="10" style="width:auto" type="text" value="12/31/2026" /></td>
+    </tr>
+    <tr>
+        <td valign="top" style='font-weight:bold'><strong>Product</strong></td><td>
+            <select name="regions" size="10" multiple>
+                        <optgroup label="Coal">
+                                <option value="MTF" >Coal (API2) CIF ARA (ARGUS-McCloskey) Futures - MTF</option>
+                                <option value="MFF" >Coal (API4) FOB Richards Bay (ARGUS-McCloskey) Futures - MFF</option>
+                        </optgroup>
+                        <optgroup label="Crude Oil">
+                                <option value="BB" >Brent Crude Oil Futures - BB</option>
+                                <option value="WS" >Crude Oil Financial Futures - WS</option>
+                                <option value="CL" selected>Crude Oil Futures - CL</option>
+                                <option value="QM" >E-mini Crude Oil Futures - QM</option>
+                        </optgroup>
+                        <optgroup label="Electricity">
+                                <option value="WECC" >Power (WECC) Cash - WECC</option>
+                        </optgroup>
+                        <optgroup label="Natural Gas">
+                                <option value="QG" >E-mini Natural Gas Futures - QG</option>
+                                <option value="Gas" >Gas Cash - Gas</option>
+                                <option value="NG" >Henry Hub Natural Gas Futures - NG</option>
+                                <option value="NN" >Henry Hub Natural Gas Last Day Financial Futures - NN</option>
+                                <option value="HH" >Natural Gas (Henry Hub) Last-day Financial Futures - HH</option>
+                                <option value="XN" >SoCal Natural Gas (Platts IFERC) - XN</option>
+                        </optgroup>
+                        <optgroup label="Refined Products">
+                                <option value="CU" >Chicago Ethanol (Platts) Futures - CU</option>
+                                <option value="HO" >NY Harbor ULSD Futures - HO</option>
+                                <option value="RB" >RBOB Gasoline Futures - RB</option>
+                        </optgroup>
+
+            </select>
+        </td>
+    </tr>
+
+    </table>
+    <input type="submit" name="action" value="View" />
+</form>
+<br />
+    <table class='deftable'>
+    <tr><td>
+    <div style='font-size:smaller'><i>DISCLAIMER: ENERGY GPS HAS USED SOURCES AND METHODS THAT IT BELIEVES TO BE RELIABLE; HOWEVER, 
+ENERGY GPS DOES NOT WARRANT THE CORRECTNESS, COMPLETENESS, CURRENTNESS, OR 
+ACCURACY OF THE INFORMATION. IN NO EVENT SHALL ENERGY GPS BE LIABLE FOR ANY 
+SPECIAL, INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES (INCLUDING WITHOUT 
+LIMITATION DAMAGES FOR LOSS OF PROFITS, BUSINESS INTERRUPTION, LOSS OF DATA, OR LOSS OF 
+BUSINESS INFORMATION), WHETHER BASED ON CONTRACT, TORT, OR OTHER LEGAL THEORY, IN 
+CONNECTION WITH THIS REPORT OR THE USE OF OR INABILITY TO USE THE INFORMATION AND 
+ANALYSIS CONTAINED IN IT.</i></div>
+    </td></tr>
+    </table>
+    <br />
+<table class='deftable'>
+    <tr>
+        <td valign="top">
+            <table class='htable'>
+                <tr>
+                    <td colspan='2' class='htableHeader'><strong>Expiry Calendar</strong> - 12/31/2020 to 12/31/2026</td>
+                </tr>
+                <tr>
+                    <td></td>
+                        <td><div style="font-size:smaller">Crude Oil Futures</div></td>
+                </tr>
+                <tr>
+                    <td><strong>Contract Month</strong></td>
+                        <td><strong>CL</strong></td>
+                </tr>
+                        <tr>
+                            <td><em>Jan 2021 (F)</em></td>
+                                <td align="right">12/21/2020</td>
+                        </tr>
+                        <tr>
+                            <td><em>Feb 2021 (G)</em></td>
+                                <td align="right">1/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Mar 2021 (H)</em></td>
+                                <td align="right">2/22/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Apr 2021 (J)</em></td>
+                                <td align="right">3/22/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>May 2021 (K)</em></td>
+                                <td align="right">4/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jun 2021 (M)</em></td>
+                                <td align="right">5/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jul 2021 (N)</em></td>
+                                <td align="right">6/22/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Aug 2021 (Q)</em></td>
+                                <td align="right">7/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Sep 2021 (U)</em></td>
+                                <td align="right">8/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Oct 2021 (V)</em></td>
+                                <td align="right">9/21/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Nov 2021 (X)</em></td>
+                                <td align="right">10/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Dec 2021 (Z)</em></td>
+                                <td align="right">11/19/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jan 2022 (F)</em></td>
+                                <td align="right">12/20/2021</td>
+                        </tr>
+                        <tr>
+                            <td><em>Feb 2022 (G)</em></td>
+                                <td align="right">1/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Mar 2022 (H)</em></td>
+                                <td align="right">2/22/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Apr 2022 (J)</em></td>
+                                <td align="right">3/22/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>May 2022 (K)</em></td>
+                                <td align="right">4/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jun 2022 (M)</em></td>
+                                <td align="right">5/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jul 2022 (N)</em></td>
+                                <td align="right">6/21/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Aug 2022 (Q)</em></td>
+                                <td align="right">7/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Sep 2022 (U)</em></td>
+                                <td align="right">8/22/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Oct 2022 (V)</em></td>
+                                <td align="right">9/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Nov 2022 (X)</em></td>
+                                <td align="right">10/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Dec 2022 (Z)</em></td>
+                                <td align="right">11/21/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jan 2023 (F)</em></td>
+                                <td align="right">12/20/2022</td>
+                        </tr>
+                        <tr>
+                            <td><em>Feb 2023 (G)</em></td>
+                                <td align="right">1/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Mar 2023 (H)</em></td>
+                                <td align="right">2/21/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Apr 2023 (J)</em></td>
+                                <td align="right">3/21/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>May 2023 (K)</em></td>
+                                <td align="right">4/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jun 2023 (M)</em></td>
+                                <td align="right">5/22/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jul 2023 (N)</em></td>
+                                <td align="right">6/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Aug 2023 (Q)</em></td>
+                                <td align="right">7/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Sep 2023 (U)</em></td>
+                                <td align="right">8/22/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Oct 2023 (V)</em></td>
+                                <td align="right">9/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Nov 2023 (X)</em></td>
+                                <td align="right">10/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Dec 2023 (Z)</em></td>
+                                <td align="right">11/20/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jan 2024 (F)</em></td>
+                                <td align="right">12/19/2023</td>
+                        </tr>
+                        <tr>
+                            <td><em>Feb 2024 (G)</em></td>
+                                <td align="right">1/22/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Mar 2024 (H)</em></td>
+                                <td align="right">2/20/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Apr 2024 (J)</em></td>
+                                <td align="right">3/20/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>May 2024 (K)</em></td>
+                                <td align="right">4/22/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jun 2024 (M)</em></td>
+                                <td align="right">5/21/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jul 2024 (N)</em></td>
+                                <td align="right">6/20/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Aug 2024 (Q)</em></td>
+                                <td align="right">7/22/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Sep 2024 (U)</em></td>
+                                <td align="right">8/20/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Oct 2024 (V)</em></td>
+                                <td align="right">9/20/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Nov 2024 (X)</em></td>
+                                <td align="right">10/22/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Dec 2024 (Z)</em></td>
+                                <td align="right">11/20/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jan 2025 (F)</em></td>
+                                <td align="right">12/19/2024</td>
+                        </tr>
+                        <tr>
+                            <td><em>Feb 2025 (G)</em></td>
+                                <td align="right">1/21/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Mar 2025 (H)</em></td>
+                                <td align="right">2/20/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Apr 2025 (J)</em></td>
+                                <td align="right">3/20/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>May 2025 (K)</em></td>
+                                <td align="right">4/22/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jun 2025 (M)</em></td>
+                                <td align="right">5/20/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jul 2025 (N)</em></td>
+                                <td align="right">6/20/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Aug 2025 (Q)</em></td>
+                                <td align="right">7/22/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Sep 2025 (U)</em></td>
+                                <td align="right">8/20/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Oct 2025 (V)</em></td>
+                                <td align="right">9/22/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Nov 2025 (X)</em></td>
+                                <td align="right">10/21/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Dec 2025 (Z)</em></td>
+                                <td align="right">11/20/2025</td>
+                        </tr>
+                        <tr>
+                            <td><em>Jan 2026 (F)</em></td>
+                                <td align="right">12/19/2025</td>
+                        </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+            </section>
+            <div id="clearfooter"></div>
+        </div>
+        <footer>
+            <div id="footer" class="footer anonfooter">
+                <div id="footermenu">
+                                    <a href="/Page/PrivacyPolicy/Index">Privacy Policy</a>
+                </div>
+                <div style="padding-top:10px">Copyright &copy; 2012, Energy GPS LLC</div>
+            </div>
+        </footer>
+
+<!-- cookie-content start -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+<script>
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+        "background": "#252e39"
+    },
+    "button": {
+        "background": "#07AFD5"
+    }
+  },
+  "theme": "classic",
+  "position": "bottom-right",
+  "content": {
+        "href": "/Page/PrivacyPolicy/Index"
+  }
+});
+</script>
+<!-- cookie-content end -->    </div>
+</body>
+</html>
