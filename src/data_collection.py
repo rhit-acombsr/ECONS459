@@ -1,7 +1,7 @@
 import os
 import requests
-import tkinter as tk
-from tkinter import filedialog
+# import tkinter as tk
+# from tkinter import filedialog
 
 def download_futures_data(output_directory_path):
     cookies = {
