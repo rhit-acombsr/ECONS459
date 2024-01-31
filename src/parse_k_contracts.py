@@ -52,10 +52,54 @@ def process_futures_data(file_path):
     # Convert to list of contract objects
     return list(contracts.values())
 
+def filter_contracts_by_uniform_k(contracts_list, uniform_k):
+    # Create a new list to store the filtered contracts
+    filtered_contracts = []
+
+    # Iterate through each contract
+    for contract in contracts_list:
+        # Check if there is any observation data with the specified uniform_k value
+        observations_with_uniform_k = [obs for obs in contract['ObservationData'] if obs['CalendarK'] == uniform_k]
+
+        # Include the contract only if it has observation data with uniform_k
+        if observations_with_uniform_k:
+            # Creating a copy of the contract with filtered observations
+            filtered_contract = contract.copy()
+            filtered_contract['ObservationData'] = observations_with_uniform_k
+            filtered_contracts.append(filtered_contract)
+
+    return filtered_contracts
+
+# Example usage:
+# filtered_list = filter_contracts_by_uniform_k(contracts_list, uniform_k_value)
+
+def add_expiration_dates_to_contracts(contracts_list, expiration_dates_csv_path):
+    # Read the CSV file containing expiration dates
+    expiration_dates_df = pd.read_csv(expiration_dates_csv_path)
+
+    # Create a mapping of contract names to expiration dates
+    expiration_dates_map = dict(zip(expiration_dates_df['ContractName'], expiration_dates_df['ExpirationDate']))
+
+    # Update each contract in the contracts_list with its expiration date
+    for contract in contracts_list:
+        contract_name = contract['ContractName']
+        expiration_date = expiration_dates_map.get(contract_name, None)
+        if expiration_date:
+            contract['ExpirationDate'] = expiration_date
+
+    return contracts_list
+
+# Example usage:
+# updated_contracts_list = add_expiration_dates_to_contracts(contracts_list, 'path_to_expiration_dates_csv.csv')
+
+
 # Example usage:
 csv_path = get_data_path()
 contracts_list = process_futures_data(csv_path)
 # print(str(type(contracts_list))) #list
 # print(str(type(contracts_list[0]))) #dict
 # print(str(contracts_list[0])) #it works!
+csv_path = get_data_path()
+updated_contracts_list = add_expiration_dates_to_contracts(contracts_list, csv_path)
+print(str(updated_contracts_list[0])) #it works!
 print("done")
