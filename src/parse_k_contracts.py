@@ -101,5 +101,5 @@ contracts_list = process_futures_data(csv_path)
 # print(str(contracts_list[0])) #it works!
 csv_path = get_data_path()
 updated_contracts_list = add_expiration_dates_to_contracts(contracts_list, csv_path)
-print(str(updated_contracts_list[0])) #it works!
+# print(str(updated_contracts_list[0])) #it works!
 print("done")
