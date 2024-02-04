@@ -132,11 +132,188 @@ def create_regression_model(data, max_lags):
     model_nw = model.fit(cov_type='HAC', cov_kwds={'maxlags': max_lags})
     return model_nw
 
+def run_regression_and_test_hypotheses(data, max_lags, output_file_path):
+    # Prepare the independent and dependent variables
+    X = data[['ln(Ft,t-k) - ln(St-k)']]
+    y = data['ln(St) - ln(St-k)']
 
-k = 4
+    # Add a constant to the model for the intercept
+    X = sm.add_constant(X)
+
+    # Fit the model using OLS with HAC standard errors
+    model = sm.OLS(y, X).fit(cov_type='HAC', cov_kwds={'maxlags': max_lags})
+
+    # Perform Wald tests for the specific hypotheses
+    wald_test_results = model.t_test("const = 0, ln(Ft,t-k) - ln(St-k) = 1")
+
+    # Save the regression summary and Wald test results to a text file
+    with open(output_file_path, 'w') as output_file:
+        output_file.write(model.summary().as_text())
+        output_file.write("\n\nWald Test Results:\n")
+        output_file.write(wald_test_results.summary().as_text())
+
+    print("Regression analysis and hypothesis testing complete. Results saved to:", output_file_path)
+
+# Example usage:
+# data = your_dataframe_here
+# max_lags = your_max_lags_value_here
+# output_file_path = "Regression_Output.txt"
+# run_regression_and_test_hypotheses(data, max_lags, output_file_path)
+
+def run_regression_no_constant_and_test(data, max_lags, output_file_path):
+    # Prepare the independent variable
+    X = data[['ln(Ft,t-k) - ln(St-k)']]
+    y = data['ln(St) - ln(St-k)']
+
+    # Note: We're not adding a constant to the model, fitting through the origin
+
+    # Fit the model using OLS with HAC standard errors, without adding a constant
+    model = sm.OLS(y, X).fit(cov_type='HAC', cov_kwds={'maxlags': max_lags})
+
+    # Perform a Wald test for the hypothesis that the coefficient is equal to one
+    # Note: The syntax "[ln(Ft,t-k) - ln(St-k)]=1" assumes the variable name matches; adjust as necessary
+    wald_test_results = model.t_test("ln(Ft,t-k) - ln(St-k)=1")
+
+    # Save the regression summary and Wald test results to a text file
+    with open(output_file_path, 'w') as output_file:
+        output_file.write(model.summary().as_text())
+        output_file.write("\n\nWald Test Results:\n")
+        output_file.write(wald_test_results.summary().as_text())
+
+    print("Regression analysis (without constant) and hypothesis testing complete. Results saved to:", output_file_path)
+
+# Example usage:
+# data = your_dataframe_here
+# max_lags = your_max_lags_value_here
+# output_file_path = "Regression_Output_No_Constant.txt"
+# run_regression_no_constant_and_test(data, max_lags, output_file_path)
+
+def run_regression_with_dynamic_lags_and_wald_test(data, K, output_file_path):
+    # Calculate max lags based on the paper's formula
+    max_lags = 2 * (K - 1)
+    
+    # Prepare the independent variable (without adding a constant)
+    X = data[['ln(Ft,t-k) - ln(St-k)']]
+    y = data['ln(St) - ln(St-k)']
+
+    # Fit the model using OLS with HAC standard errors, based on the dynamic max lags
+    model = sm.OLS(y, X).fit(cov_type='HAC', cov_kwds={'maxlags': max_lags})
+
+    # Perform a Wald test for the hypothesis that the coefficient is equal to one
+    wald_test_result = model.t_test(f"ln(Ft,t-k) - ln(St-k)=1")
+
+    # Extract the Wald test statistic
+    wald_statistic = wald_test_result.statistic[0][0]
+
+    # Save the regression summary and Wald test statistic to a text file
+    with open(output_file_path, 'w') as output_file:
+        output_file.write(model.summary().as_text())
+        output_file.write(f"\n\nWald Test Statistic: {wald_statistic}\n")
+
+    print("Regression analysis and Wald test complete. Results saved to:", output_file_path)
+
+# Example usage:
+# data = your_dataframe_here
+# K = your_K_value_here
+# output_file_path = "Regression_Output_With_Dynamic_Lags_And_Wald_Test.txt"
+# run_regression_with_dynamic_lags_and_wald_test(data, K, output_file_path)
+
+def run_regression_with_constant_and_calculate_wald(data, K, output_file_path):
+    # Prepare the independent variable and add a constant
+    X = sm.add_constant(data[['ln(Ft,t-k) - ln(St-k)']])
+    y = data['ln(St) - ln(St-k)']
+    
+    # Calculate max_lags as per the paper's methodology
+    max_lags = 2 * (K - 1)
+
+    # Fit the model using OLS with HAC standard errors
+    model = sm.OLS(y, X).fit(cov_type='HAC', cov_kwds={'maxlags': max_lags})
+
+    # Use the parameter name from the model summary for the Wald test constraint
+    # This example assumes your independent variable is exactly named 'ln(Ft,t-k) - ln(St-k)'
+    # Adjust the string as needed to match the model summary
+    # constraint = 'ln(Ft,t-k) - ln(St-k) = 1'
+    constraint = 'const = 0'
+    
+    # Calculate the Wald test statistic for the hypothesis of interest
+    wald_result = model.wald_test(constraint, use_f=False)
+
+    # Save the regression summary and Wald test result to a text file
+    with open(output_file_path, 'w') as output_file:
+        output_file.write(model.summary().as_text())
+        output_file.write("\n\nWald Test Result:\n")
+        output_file.write(str(wald_result))
+
+    print("Regression analysis with constant and Wald statistic calculation complete. Results saved to:", output_file_path)
+
+# Example usage:
+# K = number_of_months
+# data = your_dataframe_here
+# output_file_path = "Regression_Output_With_Wald.txt"
+# run_regression_with_constant_and_calculate_wald(data, K, output_file_path)
+
+def run_regression_and_wald_test(data, K, output_file_path):
+    X = data[['ln(Ft,t-k) - ln(St-k)']]  # Independent variable
+    y = data['ln(St) - ln(St-k)']  # Dependent variable
+    X = sm.add_constant(X)  # Add a constant term for the intercept
+    
+    # Fit the OLS model with HAC (Newey-West) standard errors
+    model = sm.OLS(y, X).fit(cov_type='HAC', cov_kwds={'maxlags': 2*(K-1)})
+    
+    # Define the joint hypothesis for Wald test: a=0 and b=1
+    hypothesis = '(const = 0), (ln(Ft,t-k) - ln(St-k) = 1)'
+    
+    # Perform the Wald test
+    wald_test_result = model.wald_test(hypothesis)
+    
+    # Save results
+    with open(output_file_path, 'w') as file:
+        file.write(model.summary().as_text())
+        file.write("\n\nWald Test Result (p-value for joint hypothesis a=0 and b=1):\n")
+        file.write(str(wald_test_result.pvalue))
+    
+    print("Analysis complete. Results saved to:", output_file_path)
+
+# Example usage
+# run_regression_and_wald_test(data, K, "output.txt")
+
+
+def get_output_results_path():
+    filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
+    path = filedialog.asksaveasfilename(filetypes=filetypes)
+    return path
+
+k = 3
 max_lags = 2*(k-1)
-data = get_data()
-run_regression(data, max_lags)
+# max_lags = 1
+# data = get_data()
+data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil3\\m-1\\Reproduction of Results - Reproduced oil_3 h=m01 spot=oil_1.csv")
+# data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil6\\m-1\\Reproduction of Results - Reproduced oil_6 with oil_1 as Spot and h=m-1.csv")
+# data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil12\\m-1\\Reproduction of Results - Reproduced oil_12 with oil1 as Spot and h=m-1.csv")
+
+# output_results_path = get_output_results_path()
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_minimalist_no_constant_maxlags_"+str(max_lags)+".txt"
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_minimalist_no_constant_maxlags_"+str(max_lags)+".txt"
+
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_minimalist_maxlags_"+str(max_lags)+".txt"
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_minimalist_maxlags_"+str(max_lags)+".txt"
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil12_m-1_oil_1_as_spot_minimalist_maxlags_"+str(max_lags)+".txt"
+
+output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil12_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
+
+# run_regression_and_test_hypotheses(data, max_lags, output_results_path)
+# run_regression_no_constant_and_test(data, max_lags, output_results_path)
+# run_regression_with_dynamic_lags_and_wald_test(data, k, output_results_path)
+# run_regression_with_constant_and_calculate_wald(data, k, output_results_path)
+run_regression_and_wald_test(data, k, output_results_path)
+
+
+# k = 63
+# max_lags = 2*(k-1)
+# data = get_data()
+# run_regression(data, max_lags)
 
 # datafiles_dict = read_csv_files()
 

@@ -1,0 +1,33 @@
+                                 OLS Regression Results                                
+=======================================================================================
+Dep. Variable:      ln(St) - ln(St-k)   R-squared (uncentered):                   0.053
+Model:                            OLS   Adj. R-squared (uncentered):              0.049
+Method:                 Least Squares   F-statistic:                              4.901
+Date:                Sun, 04 Feb 2024   Prob (F-statistic):                      0.0277
+Time:                        12:45:31   Log-Likelihood:                          13.531
+No. Observations:                 266   AIC:                                     -25.06
+Df Residuals:                     265   BIC:                                     -21.48
+Df Model:                           1                                                  
+Covariance Type:                  HAC                                                  
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+ln(Ft,t-k) - ln(St-k)     0.8020      0.362      2.214      0.027       0.092       1.512
+==============================================================================
+Omnibus:                       83.685   Durbin-Watson:                   0.308
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              301.217
+Skew:                          -1.299   Prob(JB):                     3.90e-66
+Kurtosis:                       7.519   Cond. No.                         1.00
+==============================================================================
+
+Notes:
+[1] R² is computed without centering (uncentered) since the model does not contain a constant.
+[2] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
+
+Wald Test Results:
+                             Test for Constraints                             
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+c0             0.8020      0.362     -0.547      0.585       0.092       1.512
+==============================================================================

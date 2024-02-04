@@ -1,0 +1,34 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      ln(St) - ln(St-k)   R-squared:                       0.077
+Model:                            OLS   Adj. R-squared:                  0.073
+Method:                 Least Squares   F-statistic:                     14.96
+Date:                Sun, 04 Feb 2024   Prob (F-statistic):           0.000139
+Time:                        12:52:32   Log-Likelihood:                -38.452
+No. Observations:                 260   AIC:                             80.90
+Df Residuals:                     258   BIC:                             88.03
+Df Model:                           1                                         
+Covariance Type:                  HAC                                         
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                     0.0772      0.025      3.140      0.002       0.029       0.125
+ln(Ft,t-k) - ln(St-k)     0.7472      0.193      3.868      0.000       0.369       1.126
+==============================================================================
+Omnibus:                       19.474   Durbin-Watson:                   0.141
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               24.399
+Skew:                          -0.566   Prob(JB):                     5.03e-06
+Kurtosis:                       3.986   Cond. No.                         9.24
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 1 lags and without small sample correction
+
+Wald Test Results:
+                             Test for Constraints                             
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+c0             0.0772      0.025      3.140      0.002       0.029       0.125
+c1             0.7472      0.193     -1.308      0.191       0.369       1.126
+==============================================================================
