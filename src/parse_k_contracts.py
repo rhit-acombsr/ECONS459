@@ -95,12 +95,12 @@ def add_expiration_dates_to_contracts(contracts_list, expiration_dates_csv_path)
 
 def get_contracts_in_path():
     filetypes = (("Contract List JSON", "*.json"), ("All files", "*.*"))
-    path = filedialog.asksaveasfilename(filetypes=filetypes)
+    path = filedialog.askopenfilename(filetypes=filetypes)
     return path
 
 def get_contracts_out_path():
     filetypes = (("Contract List JSON", "*.json"), ("All files", "*.*"))
-    path = filedialog.askopenfilename(filetypes=filetypes)
+    path = filedialog.asksaveasfilename(filetypes=filetypes)
     return path
 
 def save_contracts_to_json(contracts_list, output_path):
@@ -128,11 +128,12 @@ def load_contracts_from_json(input_path):
 # csv_path = get_data_path()
 # updated_contracts_list = add_expiration_dates_to_contracts(contracts_list, csv_path)
 
-# list_save_path = get_contracts_in_path() #saved_contracts_list.json
+# list_save_path = get_contracts_out_path() #saved_contracts_list.json
 # save_contracts_to_json(updated_contracts_list,list_save_path)
 
-list_load_path = get_contracts_out_path()
+list_load_path = get_contracts_in_path()
 loaded_contracts_list = load_contracts_from_json(list_load_path)
-# print(str(loaded_contracts_list[0])) #it works!
+print(str(loaded_contracts_list[0])) #it works!
+
 
 print("done")
