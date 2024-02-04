@@ -137,24 +137,6 @@ def find_highest_calendar_k(contracts_list):
 # highest_k = find_highest_calendar_k(contracts_list)
 # print("The highest CalendarK in the contracts list is:", highest_k)
 
-# def read_spot_prices_from_csv(input_path):
-#     # Read the CSV file
-#     data = pd.read_csv(input_path)
-    
-#     # Assuming the first column contains dates and the second column contains spot prices
-#     # Update column names based on the actual structure of your CSV
-#     date_column = data.columns[0]
-#     spot_price_column = data.columns[1]
-    
-#     # Convert the DataFrame to a dictionary with date strings as keys and spot prices as values
-#     spot_prices_dict = pd.Series(data[spot_price_column].values, index=data[date_column]).to_dict()
-    
-#     return spot_prices_dict
-
-# # Example usage:
-# # spot_prices = read_spot_prices_from_csv('path_to_your_csv_file.csv')
-# # print(spot_prices)
-
 def read_spot_prices_from_csv(input_path):
     # Read the CSV file
     data = pd.read_csv(input_path)
@@ -232,43 +214,46 @@ def get_observation_at_k(contract,k):
 # print(list_of_lengths)
 
 # Next step: load in spot data as dictionary
-spot_prices_csv_path = get_data_path()
-spot_prices_dict = read_spot_prices_from_csv(spot_prices_csv_path)
-# print(spot_prices_dict) #it works!
-spot_save_path = get_contracts_out_path()
-save_contracts_to_json(spot_prices_dict, spot_save_path) # spot_dict.json
+# spot_prices_csv_path = get_data_path()
+# spot_prices_dict = read_spot_prices_from_csv(spot_prices_csv_path)
+# # print(spot_prices_dict) #it works!
+# spot_save_path = get_contracts_out_path()
+# save_contracts_to_json(spot_prices_dict, spot_save_path) # spot_dict.json
 
-# # Next step:
-# spot_load_path = get_contracts_in_path()
-# spot_prices_dict = load_contracts_from_json(spot_load_path)
+# Next step:
+spot_load_path = get_contracts_in_path()
+spot_prices_dict = load_contracts_from_json(spot_load_path)
 
-# list_load_path = get_contracts_in_path()
-# list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
+list_load_path = get_contracts_in_path()
+list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
 
-# k = 63
-# test_contract_list = list_of_uniform_k_lists[k]
-# s_t_values = []
-# s_t_minus_k_values = []
-# f_t_t_minus_k_values = []
-# for contract in test_contract_list:
+k = 63
+test_contract_list = list_of_uniform_k_lists[k]
+s_t_values = []
+s_t_minus_k_values = []
+f_t_t_minus_k_values = []
+for contract in test_contract_list:
 
-#     observation_at_expiry = get_observation_at_k(contract,0)
-#     observation_at_k = get_observation_at_k(contract,k)
+    observation_at_expiry = get_observation_at_k(contract,0)
+    observation_at_k = get_observation_at_k(contract,k)
 
-#     expiry_date = observation_at_expiry['ObservationDate']
-#     k_date = observation_at_k['ObservationDate']
+    expiry_date = observation_at_expiry['ObservationDate']
+    k_date = observation_at_k['ObservationDate']
 
 
 
-#     s_t_values.append(spot_prices_dict[expiry_date])
-#     s_t_minus_k_values.append(spot_prices_dict[k_date])
-#     f_t_t_minus_k_values.append(observation_at_k['ContractPrice'])
+    s_t_values.append(spot_prices_dict[expiry_date])
+    s_t_minus_k_values.append(spot_prices_dict[k_date])
+    f_t_t_minus_k_values.append(observation_at_k['ContractPrice'])
 
-# print("\ns_t_values:")
-# print(s_t_values)
-# print("\ns_t_minus_k_values:")
-# print(s_t_minus_k_values)
-# print("\nf_t_t_minus_k_values:")
-# print(f_t_t_minus_k_values)
+print("\ns_t_values:")
+print(s_t_values)
+print("\ns_t_minus_k_values:")
+print(s_t_minus_k_values)
+print("\nf_t_t_minus_k_values:")
+print(f_t_t_minus_k_values)
+
+# test_contracts_save_path = get_contracts_out_path()
+# save_contracts_to_json(test_contract_list, test_contracts_save_path) # test_contract_list.json
 
 print("done")
