@@ -66,7 +66,8 @@ def filter_contracts_by_uniform_k(contracts_list, uniform_k):
         if observations_with_uniform_k:
             # Creating a copy of the contract with filtered observations
             filtered_contract = contract.copy()
-            filtered_contract['ObservationData'] = observations_with_uniform_k
+            # filtered_contract['ObservationData'] = observations_with_uniform_k # includes only obs=k
+            filtered_contract['ObservationData'] = contract['ObservationData'] #includes all
             filtered_contracts.append(filtered_contract)
 
     return filtered_contracts
@@ -136,7 +137,7 @@ def find_highest_calendar_k(contracts_list):
 # highest_k = find_highest_calendar_k(contracts_list)
 # print("The highest CalendarK in the contracts list is:", highest_k)
 
-
+# Creating JSON from CSV:
 # # Example usage:
 # csv_path = get_data_path()
 # contracts_list = process_futures_data(csv_path)
@@ -150,12 +151,23 @@ def find_highest_calendar_k(contracts_list):
 # list_save_path = get_contracts_out_path() #saved_contracts_list.json
 # save_contracts_to_json(updated_contracts_list,list_save_path)
 
+# Filtering for only contracts with expiration date observations:
+# list_load_path = get_contracts_in_path()
+# loaded_contracts_list = load_contracts_from_json(list_load_path)
+# # print(str(loaded_contracts_list[0])) #it works!
+
+# # highest_k = find_highest_calendar_k(loaded_contracts_list)
+# # print("The highest CalendarK in the contracts list is:", highest_k) #125
+
+# contracts_with_expiration_observations = filter_contracts_by_uniform_k(loaded_contracts_list, 0)
+# highest_k = find_highest_calendar_k(contracts_with_expiration_observations)
+# print("The highest CalendarK in the contracts list is:", highest_k) # 125 still
+# list_save_path = get_contracts_out_path() # contracts_with_expiration_observations.json
+# save_contracts_to_json(contracts_with_expiration_observations,list_save_path)
+
+# Next step..?
 list_load_path = get_contracts_in_path()
 loaded_contracts_list = load_contracts_from_json(list_load_path)
-# print(str(loaded_contracts_list[0])) #it works!
-
-highest_k = find_highest_calendar_k(loaded_contracts_list)
-print("The highest CalendarK in the contracts list is:", highest_k)
 
 
 print("done")
