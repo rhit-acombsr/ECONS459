@@ -118,6 +118,25 @@ def load_contracts_from_json(input_path):
 # Example usage:
 # contracts_list = load_contracts_from_json('path_to_input.json')
 
+def find_highest_calendar_k(contracts_list):
+    # Initialize the highest CalendarK value to a very small number
+    highest_calendar_k = -1
+
+    # Iterate through each contract in the list
+    for contract in contracts_list:
+        # Iterate through each observation in the contract
+        for observation in contract['ObservationData']:
+            # Update the highest CalendarK if the current one is higher
+            if observation['CalendarK'] > highest_calendar_k:
+                highest_calendar_k = observation['CalendarK']
+
+    return highest_calendar_k
+
+# Example usage:
+# highest_k = find_highest_calendar_k(contracts_list)
+# print("The highest CalendarK in the contracts list is:", highest_k)
+
+
 # # Example usage:
 # csv_path = get_data_path()
 # contracts_list = process_futures_data(csv_path)
@@ -133,7 +152,10 @@ def load_contracts_from_json(input_path):
 
 list_load_path = get_contracts_in_path()
 loaded_contracts_list = load_contracts_from_json(list_load_path)
-print(str(loaded_contracts_list[0])) #it works!
+# print(str(loaded_contracts_list[0])) #it works!
+
+highest_k = find_highest_calendar_k(loaded_contracts_list)
+print("The highest CalendarK in the contracts list is:", highest_k)
 
 
 print("done")
