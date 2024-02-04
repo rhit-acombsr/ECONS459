@@ -165,9 +165,12 @@ def find_highest_calendar_k(contracts_list):
 # list_save_path = get_contracts_out_path() # contracts_with_expiration_observations.json
 # save_contracts_to_json(contracts_with_expiration_observations,list_save_path)
 
-# Next step..?
+# Next step: ensure we even still have enough contracts to do what we need to here.
 list_load_path = get_contracts_in_path()
 loaded_contracts_list = load_contracts_from_json(list_load_path)
-
+print(str(len(loaded_contracts_list)))
+# saved_contracts_list.json = 141
+# contracts_with_expiration_observations.json = 140
+# good enough for government work!
 
 print("done")
