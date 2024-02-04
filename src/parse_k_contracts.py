@@ -2,6 +2,7 @@ import pandas as pd
 from tkinter import filedialog
 import tkinter as tk
 import json
+import math
 
 def get_data_path():
     filetypes = (("CSV files", "*.csv"), ("All files", "*.*"))
@@ -9,6 +10,11 @@ def get_data_path():
     # print("Chose file at " + path)
     # data = pd.read_csv(path)
     # return data
+    return path
+
+def get_csv_output_path():
+    filetypes = (("CSV files", "*.csv"), ("All files", "*.*"))
+    path = filedialog.asksaveasfilename(filetypes=filetypes)
     return path
 
 # Function to format dates
@@ -64,6 +70,8 @@ def filter_contracts_by_uniform_k(contracts_list, uniform_k):
 
         # Include the contract only if it has observation data with uniform_k
         if observations_with_uniform_k:
+        # # Include the contract only if it has POSITIVE observation data with uniform_k
+        # if observations_with_uniform_k and observations_with_uniform_k[0]['ContractPrice'] >= 0:
             # Creating a copy of the contract with filtered observations
             filtered_contract = contract.copy()
             # filtered_contract['ObservationData'] = observations_with_uniform_k # includes only obs=k
@@ -157,11 +165,26 @@ def read_spot_prices_from_csv(input_path):
 # spot_prices = read_spot_prices_from_csv('path_to_your_csv_file.csv')
 # print(spot_prices)
 
-
 def get_observation_at_k(contract,k):
     for observation in contract['ObservationData']:
         if int(observation['CalendarK']) == k:
             return observation
+
+def save_regression_data_to_csv(y_values, x_values, output_path):
+    # Create a DataFrame from the provided lists
+    df = pd.DataFrame({
+        'ln(St) - ln(St-k)': y_values,
+        'ln(Ft,t-k) - ln(St-k)': x_values
+    })
+    
+    # Save the DataFrame to a CSV file with the specified headers
+    df.to_csv(output_path, index=False)
+
+# Example usage:
+# y_values = [0.1, 0.2, 0.3]  # Example list of y values
+# x_values = [0.4, 0.5, 0.6]  # Example list of x values
+# output_path = 'path_to_your_output_file.csv'
+# save_regression_data_to_csv(y_values, x_values, output_path)
 
 
 # Creating JSON from CSV:
@@ -232,6 +255,10 @@ test_contract_list = list_of_uniform_k_lists[k]
 s_t_values = []
 s_t_minus_k_values = []
 f_t_t_minus_k_values = []
+
+y_values = [] # time t-k expectations of the change in the spot rate
+x_values = [] # basis at time t-k
+
 for contract in test_contract_list:
 
     observation_at_expiry = get_observation_at_k(contract,0)
@@ -240,20 +267,38 @@ for contract in test_contract_list:
     expiry_date = observation_at_expiry['ObservationDate']
     k_date = observation_at_k['ObservationDate']
 
+    s_t = spot_prices_dict[expiry_date]
+    s_t_minus_k = spot_prices_dict[k_date]
+    f_t_t_minus_k = observation_at_k['ContractPrice']
+
+    if s_t>=0 and s_t_minus_k >= 0 and f_t_t_minus_k >= 0:
+        s_t_values.append(s_t)
+        s_t_minus_k_values.append(s_t_minus_k)
+        f_t_t_minus_k_values.append(f_t_t_minus_k)
+
+        y = math.log(s_t) - math.log(s_t_minus_k)
+        x = math.log(f_t_t_minus_k) - math.log(s_t_minus_k)
+        
+        y_values.append(y)
+        x_values.append(x)
 
 
-    s_t_values.append(spot_prices_dict[expiry_date])
-    s_t_minus_k_values.append(spot_prices_dict[k_date])
-    f_t_t_minus_k_values.append(observation_at_k['ContractPrice'])
+# print("\ns_t_values:")
+# print(s_t_values)
+# print("\ns_t_minus_k_values:")
+# print(s_t_minus_k_values)
+# print("\nf_t_t_minus_k_values:")
+# print(f_t_t_minus_k_values)
 
-print("\ns_t_values:")
-print(s_t_values)
-print("\ns_t_minus_k_values:")
-print(s_t_minus_k_values)
-print("\nf_t_t_minus_k_values:")
-print(f_t_t_minus_k_values)
+# print("\ny_values:") # "ln(St) - ln(St-k)"
+# print(y_values)
+# print("\nx_values:") # "ln(Ft,t-k) - ln(St-k)"
+# print(x_values)
 
 # test_contracts_save_path = get_contracts_out_path()
 # save_contracts_to_json(test_contract_list, test_contracts_save_path) # test_contract_list.json
+
+output_path = get_csv_output_path()
+save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
 
 print("done")
