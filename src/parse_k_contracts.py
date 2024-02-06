@@ -254,6 +254,9 @@ def process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, ou
     print("Saving output to: " + output_path)
     save_regression_data_to_csv(y_values, x_values, output_path)
 
+def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_k_lists, output_dir_path):
+    for k in range(len(list_of_uniform_k_lists)):
+        process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k)
 
 # Creating JSON from CSV:
 # # Example usage:
@@ -312,19 +315,30 @@ def process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, ou
 # save_contracts_to_json(spot_prices_dict, spot_save_path) # spot_dict.json
 
 # Next step:
+# spot_load_path = get_contracts_in_path()
+# spot_prices_dict = load_contracts_from_json(spot_load_path)
+
+# list_load_path = get_contracts_in_path()
+# list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
+
+# # output_path = get_csv_output_path()
+# # save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
+# output_dir_path = get_dir()
+# # print(get_dir())
+
+# k = 63
+
+# process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k)
+
+# Next step:
 spot_load_path = get_contracts_in_path()
 spot_prices_dict = load_contracts_from_json(spot_load_path)
 
 list_load_path = get_contracts_in_path()
 list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
 
-# output_path = get_csv_output_path()
-# save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
 output_dir_path = get_dir()
-# print(get_dir())
 
-k = 63
-
-process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k)
+process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_k_lists, output_dir_path)
 
 print("done")
