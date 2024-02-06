@@ -286,9 +286,9 @@ def get_output_results_path():
 def k_to_max_lags(k):
     return max(1, round(((k-30) / 30)*2))
 
-k = 63
-max_lags = k_to_max_lags(k)
-# max_lags = 2*(k-1)
+k = 3
+# max_lags = k_to_max_lags(k)
+max_lags = 2*(k-1)
 # max_lags = 1
 data = get_data()
 # data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil3\\m-1\\Reproduction of Results - Reproduced oil_3 h=m01 spot=oil_1.csv")
@@ -311,7 +311,8 @@ output_results_path = get_output_results_path()
 # run_regression_no_constant_and_test(data, max_lags, output_results_path)
 # run_regression_with_dynamic_lags_and_wald_test(data, k, output_results_path)
 # run_regression_with_constant_and_calculate_wald(data, k, output_results_path)
-run_regression_and_wald_test(data, k, output_results_path)
+# run_regression_and_wald_test(data, k, output_results_path)
+run_regression(data, max_lags)
 
 
 # k = 63
