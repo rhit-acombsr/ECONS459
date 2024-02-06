@@ -331,14 +331,16 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 # process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k)
 
 # Next step:
-spot_load_path = get_contracts_in_path()
-spot_prices_dict = load_contracts_from_json(spot_load_path)
+# spot_load_path = get_contracts_in_path()
+# spot_prices_dict = load_contracts_from_json(spot_load_path)
 
-list_load_path = get_contracts_in_path()
-list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
+# list_load_path = get_contracts_in_path()
+# list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
 
-output_dir_path = get_dir()
+# output_dir_path = get_dir()
 
-process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_k_lists, output_dir_path)
+# process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_k_lists, output_dir_path)
+
+# Next step:
 
 print("done")
