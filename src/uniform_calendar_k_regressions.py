@@ -106,6 +106,19 @@ def run_regression_and_wald_test_json(data, k, output_json_path):
 # Example usage
 # run_regression_and_wald_test_json(data, k, "output.json")
 
+def run_all_regressions(input_dir_path, output_dir_path):
+    for k in range(125)[1:]:
+        print("\n"+("_"*89)+"\nRunning regression for Uniform Calendar k = "+str(k)+":\n")
+        input_file_name = "uniform_calendar_k_" + str(k) + ".csv"
+        input_path = os.path.join(input_dir_path, input_file_name)
+        data = pd.read_csv(input_path)
+        output_txt_file_name = "uniform_calendar_k_" + str(k) + ".txt"
+        output_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
+        output_results_path_txt = os.path.join(output_dir_path, output_txt_file_name)
+        output_results_path_json = os.path.join(output_dir_path, output_json_file_name)
+        run_regression_and_wald_test(data, k, output_results_path_txt)
+        run_regression_and_wald_test_json(data, k, output_results_path_json)
+
 # Next step:
 # k = 63
 # data = get_data()
@@ -133,16 +146,6 @@ def run_regression_and_wald_test_json(data, k, output_json_path):
 # Next step:
 input_dir_path = get_dir()
 output_dir_path = get_dir()
-for k in range(125)[1:]:
-    print("\n"+("_"*89)+"\nRunning regression for Uniform Calendar k = "+str(k)+":\n")
-    input_file_name = "uniform_calendar_k_" + str(k) + ".csv"
-    input_path = os.path.join(input_dir_path, input_file_name)
-    data = pd.read_csv(input_path)
-    output_txt_file_name = "uniform_calendar_k_" + str(k) + ".txt"
-    output_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
-    output_results_path_txt = os.path.join(output_dir_path, output_txt_file_name)
-    output_results_path_json = os.path.join(output_dir_path, output_json_file_name)
-    run_regression_and_wald_test(data, k, output_results_path_txt)
-    run_regression_and_wald_test_json(data, k, output_results_path_json)
+run_all_regressions(input_dir_path, output_dir_path)
 
 print("All done!")

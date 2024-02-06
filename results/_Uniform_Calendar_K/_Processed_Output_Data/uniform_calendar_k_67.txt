@@ -6,7 +6,7 @@ Dep. Variable:      ln(St) - ln(St-k)   R-squared:                       0.217
 Model:                            OLS   Adj. R-squared:                  0.209
 Method:                 Least Squares   F-statistic:                     47.96
 Date:                Tue, 06 Feb 2024   Prob (F-statistic):           6.81e-10
-Time:                        09:25:47   Log-Likelihood:                 29.842
+Time:                        09:28:29   Log-Likelihood:                 29.842
 No. Observations:                  90   AIC:                            -55.68
 Df Residuals:                      88   BIC:                            -50.68
 Df Model:                           1                                         
