@@ -1,0 +1,30 @@
+Results for Uniform Calendar k = 106:
+_________________________________________________________________________________________
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      ln(St) - ln(St-k)   R-squared:                       0.103
+Model:                            OLS   Adj. R-squared:                  0.095
+Method:                 Least Squares   F-statistic:                     14.35
+Date:                Tue, 06 Feb 2024   Prob (F-statistic):           0.000254
+Time:                        09:25:48   Log-Likelihood:                -15.893
+No. Observations:                 107   AIC:                             35.79
+Df Residuals:                     105   BIC:                             41.13
+Df Model:                           1                                         
+Covariance Type:                  HAC                                         
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                    -0.0370      0.042     -0.877      0.381      -0.120       0.046
+ln(Ft,t-k) - ln(St-k)     2.0827      0.550      3.788      0.000       1.005       3.160
+==============================================================================
+Omnibus:                      110.937   Durbin-Watson:                   0.824
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             1695.245
+Skew:                          -3.446   Prob(JB):                         0.00
+Kurtosis:                      21.241   Cond. No.                         21.8
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 5 lags and without small sample correction
+
+Wald Test Result (p-value for joint hypothesis a=0 and b=1):
+0.12074648963979766
