@@ -134,8 +134,63 @@ def load_dictionary_from_json(input_path):
         loaded_dictionary = json.load(json_file)
     return loaded_dictionary
 
-def tabulate_results():
-    return
+def tabulate_results(input_dir_path, output_csv_path):
+    Uniform_Calendar_k = []
+    coef_a = []
+    std_err_a = []
+    z_a = []
+    P_greater_z_a = []
+    CI_Lower_a = []
+    CI_Upper_a = []
+    coef_b = []
+    std_err_b = []
+    z_b = []
+    P_greater_z_b = []
+    CI_Lower_b = []
+    CI_Upper_b = []
+    Wald_Test_Result = []
+
+    for k in range(125)[1:]:
+        input_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
+        input_results_path_json = os.path.join(input_dir_path, input_json_file_name)
+        loaded_dictionary = load_dictionary_from_json(input_results_path_json)
+
+        a = loaded_dictionary["Parameter Results"][0]
+        b = loaded_dictionary["Parameter Results"][1]
+
+        Uniform_Calendar_k.append(int(loaded_dictionary["Uniform Calendar k"]))
+        coef_a.append(float(a["coef"]))
+        std_err_a.append(float(a["std err"]))
+        z_a.append(float(a["z"]))
+        P_greater_z_a.append(float(a["P>|z|"]))
+        CI_Lower_a.append(float(a["95% CI"]["Lower"]))
+        CI_Upper_a.append(float(a["95% CI"]["Upper"]))
+        coef_b.append(float(b["coef"]))
+        std_err_b.append(float(b["std err"]))
+        z_b.append(float(b["z"]))
+        P_greater_z_b.append(float(b["P>|z|"]))
+        CI_Lower_b.append(float(b["95% CI"]["Lower"]))
+        CI_Upper_b.append(float(b["95% CI"]["Upper"]))
+        Wald_Test_Result.append(float(loaded_dictionary["Wald Test Result"]))
+
+    df = pd.DataFrame({
+        'Uniform Calendar k':Uniform_Calendar_k,
+        'coef(a)':coef_a,
+        'std err(a)':std_err_a,
+        'z(a)':z_a,
+        'P>|z|(a)':P_greater_z_a,
+        '95% CI Lower(a)':CI_Lower_a,
+        '95% CI Upper(a)':CI_Upper_a,
+        'coef(b)':coef_b,
+        'std err(b)':std_err_b,
+        'z(b)':z_b,
+        'P>|z|(b)':P_greater_z_b,
+        '95% CI Lower(b)':CI_Lower_b,
+        '95% CI Upper(b)':CI_Upper_b,
+        'Wald Test Result':Wald_Test_Result
+    })
+
+    df.to_csv(output_csv_path, index=False)
 
 # Next step:
 # k = 63
@@ -167,121 +222,116 @@ def tabulate_results():
 # run_all_regressions(input_dir_path, output_dir_path)
 
 # Next step:
-input_path = get_json_in_path()
-loaded_dictionary = load_dictionary_from_json(input_path)
-k = int(loaded_dictionary["Uniform Calendar k"])
-# print(loaded_dictionary)
-# print("k = " + str(k))
-# print(str(type(k)))
+# input_path = get_json_in_path()
+# loaded_dictionary = load_dictionary_from_json(input_path)
+# k = int(loaded_dictionary["Uniform Calendar k"])
+# # print(loaded_dictionary)
+# # print("k = " + str(k))
+# # print(str(type(k)))
 
-a = loaded_dictionary["Parameter Results"][0]
-b = loaded_dictionary["Parameter Results"][1]
+# a = loaded_dictionary["Parameter Results"][0]
+# b = loaded_dictionary["Parameter Results"][1]
 
-Uniform_Calendar_k = []
-coef_a = []
-std_err_a = []
-z_a = []
-P_greater_z_a = []
-CI_Lower_a = []
-CI_Upper_a = []
-coef_b = []
-std_err_b = []
-z_b = []
-P_greater_z_b = []
-CI_Lower_b = []
-CI_Upper_b = []
-Wald_Test_Result = []
+# Uniform_Calendar_k = []
+# coef_a = []
+# std_err_a = []
+# z_a = []
+# P_greater_z_a = []
+# CI_Lower_a = []
+# CI_Upper_a = []
+# coef_b = []
+# std_err_b = []
+# z_b = []
+# P_greater_z_b = []
+# CI_Lower_b = []
+# CI_Upper_b = []
+# Wald_Test_Result = []
 
-Uniform_Calendar_k.append(int(loaded_dictionary["Uniform Calendar k"]))
-coef_a.append(float(a["coef"]))
-std_err_a.append(float(a["std err"]))
-z_a.append(float(a["z"]))
-P_greater_z_a.append(float(a["P>|z|"]))
-CI_Lower_a.append(float(a["95% CI"]["Lower"]))
-CI_Upper_a.append(float(a["95% CI"]["Upper"]))
-coef_b.append(float(b["coef"]))
-std_err_b.append(float(b["std err"]))
-z_b.append(float(b["z"]))
-P_greater_z_b.append(float(b["P>|z|"]))
-CI_Lower_b.append(float(b["95% CI"]["Lower"]))
-CI_Upper_b.append(float(b["95% CI"]["Upper"]))
-Wald_Test_Result.append(float(loaded_dictionary["Wald Test Result"]))
-
-df = pd.DataFrame({
-    'Uniform Calendar k':Uniform_Calendar_k,
-    'coef(a)':coef_a,
-    'std err(a)':std_err_a,
-    'z(a)':z_a,
-    'P>|z|(a)':P_greater_z_a,
-    '95% CI Lower(a)':CI_Lower_a,
-    '95% CI Upper(a)':CI_Upper_a,
-    'coef(b)':coef_b,
-    'std err(b)':std_err_b,
-    'z(b)':z_b,
-    'P>|z|(b)':P_greater_z_b,
-    '95% CI Lower(b)':CI_Lower_b,
-    '95% CI Upper(b)':CI_Upper_b,
-    'Wald Test Result':Wald_Test_Result
-})
-
-# int(loaded_dictionary["Uniform Calendar k"])
-# float(a["coef"])
-# float(a["std err"])
-# float(a["z"])
-# float(a["P>|z|"])
-# float(a["95% CI"]["Lower"])
-# float(a["95% CI"]["Upper"])
-# float(b["coef"])
-# float(b["std err"])
-# float(b["z"])
-# float(b["P>|z|"])
-# float(b["95% CI"]["Lower"])
-# float(b["95% CI"]["Upper"])
-# float(loaded_dictionary["Wald Test Result"])
-
-# Uniform_Calendar_k
-# coef_a
-# std_err_a
-# z_a
-# P_greater_z_a
-# CI_Lower_a
-# CI_Upper_a
-# coef_b
-# std_err_b
-# z_b
-# P_greater_z_b
-# CI_Lower_b
-# CI_Upper_b
-# Wald_Test_Result
+# Uniform_Calendar_k.append(int(loaded_dictionary["Uniform Calendar k"]))
+# coef_a.append(float(a["coef"]))
+# std_err_a.append(float(a["std err"]))
+# z_a.append(float(a["z"]))
+# P_greater_z_a.append(float(a["P>|z|"]))
+# CI_Lower_a.append(float(a["95% CI"]["Lower"]))
+# CI_Upper_a.append(float(a["95% CI"]["Upper"]))
+# coef_b.append(float(b["coef"]))
+# std_err_b.append(float(b["std err"]))
+# z_b.append(float(b["z"]))
+# P_greater_z_b.append(float(b["P>|z|"]))
+# CI_Lower_b.append(float(b["95% CI"]["Lower"]))
+# CI_Upper_b.append(float(b["95% CI"]["Upper"]))
+# Wald_Test_Result.append(float(loaded_dictionary["Wald Test Result"]))
 
 # df = pd.DataFrame({
-#     'Uniform Calendar k': [int(loaded_dictionary["Uniform Calendar k"])],
-#     'coef(a)': [float(a["coef"])],
-#     'std err(a)': [float(a["std err"])],
-#     'z(a)': [float(a["z"])],
-#     'P>|z|(a)': [float(a["P>|z|"])],
-#     '95% CI Lower(a)': [float(a["95% CI"]["Lower"])],
-#     '95% CI Upper(a)': [float(a["95% CI"]["Upper"])],
-#     'coef(b)': [float(b["coef"])],
-#     'std err(b)': [float(b["std err"])],
-#     'z(b)': [float(b["z"])],
-#     'P>|z|(b)': [float(b["P>|z|"])],
-#     '95% CI Lower(b)': [float(b["95% CI"]["Lower"])],
-#     '95% CI Upper(b)': [float(b["95% CI"]["Upper"])],
-#     'Wald Test Result': [float(loaded_dictionary["Wald Test Result"])]
+#     'Uniform Calendar k':Uniform_Calendar_k,
+#     'coef(a)':coef_a,
+#     'std err(a)':std_err_a,
+#     'z(a)':z_a,
+#     'P>|z|(a)':P_greater_z_a,
+#     '95% CI Lower(a)':CI_Lower_a,
+#     '95% CI Upper(a)':CI_Upper_a,
+#     'coef(b)':coef_b,
+#     'std err(b)':std_err_b,
+#     'z(b)':z_b,
+#     'P>|z|(b)':P_greater_z_b,
+#     '95% CI Lower(b)':CI_Lower_b,
+#     '95% CI Upper(b)':CI_Upper_b,
+#     'Wald Test Result':Wald_Test_Result
 # })
 
-output_path = get_output_path_csv()
-df.to_csv(output_path, index=False)
+# # int(loaded_dictionary["Uniform Calendar k"])
+# # float(a["coef"])
+# # float(a["std err"])
+# # float(a["z"])
+# # float(a["P>|z|"])
+# # float(a["95% CI"]["Lower"])
+# # float(a["95% CI"]["Upper"])
+# # float(b["coef"])
+# # float(b["std err"])
+# # float(b["z"])
+# # float(b["P>|z|"])
+# # float(b["95% CI"]["Lower"])
+# # float(b["95% CI"]["Upper"])
+# # float(loaded_dictionary["Wald Test Result"])
 
-# def save_regression_data_to_csv(y_values, x_values, output_path):
-#     # Create a DataFrame from the provided lists
-#     df = pd.DataFrame({
-#         'ln(St) - ln(St-k)': y_values,
-#         'ln(Ft,t-k) - ln(St-k)': x_values
-#     })
-    
-#     # Save the DataFrame to a CSV file with the specified headers
-#     df.to_csv(output_path, index=False)
+# # Uniform_Calendar_k
+# # coef_a
+# # std_err_a
+# # z_a
+# # P_greater_z_a
+# # CI_Lower_a
+# # CI_Upper_a
+# # coef_b
+# # std_err_b
+# # z_b
+# # P_greater_z_b
+# # CI_Lower_b
+# # CI_Upper_b
+# # Wald_Test_Result
+
+# # df = pd.DataFrame({
+# #     'Uniform Calendar k': [int(loaded_dictionary["Uniform Calendar k"])],
+# #     'coef(a)': [float(a["coef"])],
+# #     'std err(a)': [float(a["std err"])],
+# #     'z(a)': [float(a["z"])],
+# #     'P>|z|(a)': [float(a["P>|z|"])],
+# #     '95% CI Lower(a)': [float(a["95% CI"]["Lower"])],
+# #     '95% CI Upper(a)': [float(a["95% CI"]["Upper"])],
+# #     'coef(b)': [float(b["coef"])],
+# #     'std err(b)': [float(b["std err"])],
+# #     'z(b)': [float(b["z"])],
+# #     'P>|z|(b)': [float(b["P>|z|"])],
+# #     '95% CI Lower(b)': [float(b["95% CI"]["Lower"])],
+# #     '95% CI Upper(b)': [float(b["95% CI"]["Upper"])],
+# #     'Wald Test Result': [float(loaded_dictionary["Wald Test Result"])]
+# # })
+
+# output_path = get_output_path_csv()
+# df.to_csv(output_path, index=False)
+
+# Next step:
+input_dir_path = get_dir()
+output_csv_path = get_output_path_csv()
+tabulate_results(input_dir_path, output_csv_path)
 
 print("All done!")
