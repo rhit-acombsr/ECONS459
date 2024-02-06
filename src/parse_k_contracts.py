@@ -1,5 +1,6 @@
 import pandas as pd
 from tkinter import filedialog
+from tkinter.filedialog import askdirectory
 import tkinter as tk
 import json
 import math
@@ -186,6 +187,58 @@ def save_regression_data_to_csv(y_values, x_values, output_path):
 # output_path = 'path_to_your_output_file.csv'
 # save_regression_data_to_csv(y_values, x_values, output_path)
 
+def get_dir():
+    dir = askdirectory(title='Select Folder')
+    return dir
+
+def process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k):
+    test_contract_list = list_of_uniform_k_lists[k]
+    s_t_values = []
+    s_t_minus_k_values = []
+    f_t_t_minus_k_values = []
+
+    y_values = [] # time t-k expectations of the change in the spot rate
+    x_values = [] # basis at time t-k
+
+    for contract in test_contract_list:
+
+        observation_at_expiry = get_observation_at_k(contract,0)
+        observation_at_k = get_observation_at_k(contract,k)
+
+        expiry_date = observation_at_expiry['ObservationDate']
+        k_date = observation_at_k['ObservationDate']
+
+        s_t = spot_prices_dict[expiry_date]
+        s_t_minus_k = spot_prices_dict[k_date]
+        f_t_t_minus_k = observation_at_k['ContractPrice']
+
+        if s_t>=0 and s_t_minus_k >= 0 and f_t_t_minus_k >= 0:
+            s_t_values.append(s_t)
+            s_t_minus_k_values.append(s_t_minus_k)
+            f_t_t_minus_k_values.append(f_t_t_minus_k)
+
+            y = math.log(s_t) - math.log(s_t_minus_k)
+            x = math.log(f_t_t_minus_k) - math.log(s_t_minus_k)
+            
+            y_values.append(y)
+            x_values.append(x)
+
+
+    print("\ns_t_values:")
+    print(s_t_values)
+    print("\ns_t_minus_k_values:")
+    print(s_t_minus_k_values)
+    print("\nf_t_t_minus_k_values:")
+    print(f_t_t_minus_k_values)
+
+    print("\ny_values:") # "ln(St) - ln(St-k)"
+    print(y_values)
+    print("\nx_values:") # "ln(Ft,t-k) - ln(St-k)"
+    print(x_values)
+
+    # test_contracts_save_path = get_contracts_out_path()
+    # save_contracts_to_json(test_contract_list, test_contracts_save_path) # test_contract_list.json
+    print()
 
 # Creating JSON from CSV:
 # # Example usage:
@@ -251,54 +304,11 @@ list_load_path = get_contracts_in_path()
 list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
 
 k = 63
-test_contract_list = list_of_uniform_k_lists[k]
-s_t_values = []
-s_t_minus_k_values = []
-f_t_t_minus_k_values = []
 
-y_values = [] # time t-k expectations of the change in the spot rate
-x_values = [] # basis at time t-k
-
-for contract in test_contract_list:
-
-    observation_at_expiry = get_observation_at_k(contract,0)
-    observation_at_k = get_observation_at_k(contract,k)
-
-    expiry_date = observation_at_expiry['ObservationDate']
-    k_date = observation_at_k['ObservationDate']
-
-    s_t = spot_prices_dict[expiry_date]
-    s_t_minus_k = spot_prices_dict[k_date]
-    f_t_t_minus_k = observation_at_k['ContractPrice']
-
-    if s_t>=0 and s_t_minus_k >= 0 and f_t_t_minus_k >= 0:
-        s_t_values.append(s_t)
-        s_t_minus_k_values.append(s_t_minus_k)
-        f_t_t_minus_k_values.append(f_t_t_minus_k)
-
-        y = math.log(s_t) - math.log(s_t_minus_k)
-        x = math.log(f_t_t_minus_k) - math.log(s_t_minus_k)
-        
-        y_values.append(y)
-        x_values.append(x)
-
-
-# print("\ns_t_values:")
-# print(s_t_values)
-# print("\ns_t_minus_k_values:")
-# print(s_t_minus_k_values)
-# print("\nf_t_t_minus_k_values:")
-# print(f_t_t_minus_k_values)
-
-# print("\ny_values:") # "ln(St) - ln(St-k)"
-# print(y_values)
-# print("\nx_values:") # "ln(Ft,t-k) - ln(St-k)"
-# print(x_values)
-
-# test_contracts_save_path = get_contracts_out_path()
-# save_contracts_to_json(test_contract_list, test_contracts_save_path) # test_contract_list.json
 
 output_path = get_csv_output_path()
 save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
+
+# print(get_dir())
 
 print("done")
