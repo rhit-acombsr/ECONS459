@@ -1,8 +1,9 @@
 import statsmodels.api as sm
 import json
 from datetime import datetime
-from tkinter import filedialog
 import tkinter as tk
+from tkinter import filedialog
+from tkinter.filedialog import askdirectory
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -26,6 +27,10 @@ def get_output_results_path_json():
     path = filedialog.asksaveasfilename(filetypes=filetypes)
     return path
 
+def get_dir():
+    dir = askdirectory(title='Select Folder')
+    return dir
+
 def k_to_max_lags(k):
     # return 2*(k-1)
     return max(1, round(((k-30) / 30)*2))
@@ -48,6 +53,8 @@ def run_regression_and_wald_test(data, k, output_file_path):
     
     # Save results
     with open(output_file_path, 'w') as file:
+        file.write("Results for Uniform Calendar k = " + str(k)+":\n")
+        file.write(("_"*89)+"\n")
         file.write(model.summary().as_text())
         file.write("\n\nWald Test Result (p-value for joint hypothesis a=0 and b=1):\n")
         file.write(str(wald_test_result.pvalue))
@@ -56,10 +63,6 @@ def run_regression_and_wald_test(data, k, output_file_path):
 
 # Example usage
 # run_regression_and_wald_test(data, k, "output.txt")
-
-import statsmodels.api as sm
-import json
-from datetime import datetime
 
 def run_regression_and_wald_test_json(data, k, output_json_path):
     X = sm.add_constant(data[['ln(Ft,t-k) - ln(St-k)']])  # Independent variable with constant
@@ -74,6 +77,7 @@ def run_regression_and_wald_test_json(data, k, output_json_path):
     ci = model.conf_int().applymap(float)  # Convert confidence intervals to float
 
     result_data = {
+        "Uniform Calendar k": k,
         # Include model summary attributes
         "Dep. Variable": model.model.endog_names,
         # Other attributes...
@@ -110,11 +114,28 @@ def run_regression_and_wald_test_json(data, k, output_json_path):
 # Example usage
 # run_regression_and_wald_test_json(data, k, "output.json")
 
+# Next step:
+# k = 63
+# data = get_data()
+# # output_results_path_txt = get_output_results_path_txt()
+# output_results_path_json = get_output_results_path_json()
+# # run_regression_and_wald_test(data, k, output_results_path_txt)
+# run_regression_and_wald_test_json(data, k, output_results_path_json)
+
+# Next step:
 k = 63
-data = get_data()
-# output_results_path_txt = get_output_results_path_txt()
-output_results_path_json = get_output_results_path_json()
-# run_regression_and_wald_test(data, k, output_results_path_txt)
+input_dir_path = get_dir()
+input_file_name = "uniform_calendar_k_" + str(k) + ".csv"
+input_path = os.path.join(input_dir_path, input_file_name)
+data = pd.read_csv(input_path)
+
+output_dir_path = get_dir()
+output_txt_file_name = "uniform_calendar_k_" + str(k) + ".txt"
+output_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
+output_results_path_txt = os.path.join(output_dir_path, output_txt_file_name)
+output_results_path_json = os.path.join(output_dir_path, output_json_file_name)
+
+run_regression_and_wald_test(data, k, output_results_path_txt)
 run_regression_and_wald_test_json(data, k, output_results_path_json)
 
 print("All done!")
