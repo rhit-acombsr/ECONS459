@@ -1,0 +1,28 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      ln(St) - ln(St-k)   R-squared:                       0.005
+Model:                            OLS   Adj. R-squared:                 -0.003
+Method:                 Least Squares   F-statistic:                    0.8613
+Date:                Tue, 06 Feb 2024   Prob (F-statistic):              0.355
+Time:                        07:52:40   Log-Likelihood:                 19.072
+No. Observations:                 130   AIC:                            -34.14
+Df Residuals:                     128   BIC:                            -28.41
+Df Model:                           1                                         
+Covariance Type:                  HAC                                         
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                    -0.0130      0.011     -1.149      0.251      -0.035       0.009
+ln(Ft,t-k) - ln(St-k)     0.4074      0.439      0.928      0.353      -0.453       1.268
+==============================================================================
+Omnibus:                      169.206   Durbin-Watson:                   1.635
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             7918.360
+Skew:                          -4.762   Prob(JB):                         0.00
+Kurtosis:                      40.029   Cond. No.                         27.7
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 124 lags and without small sample correction
+
+Wald Test Result (p-value for joint hypothesis a=0 and b=1):
+0.002622744091887016

@@ -4,6 +4,7 @@ from tkinter.filedialog import askdirectory
 import tkinter as tk
 import json
 import math
+import os
 
 def get_data_path():
     filetypes = (("CSV files", "*.csv"), ("All files", "*.*"))
@@ -192,6 +193,15 @@ def get_dir():
     return dir
 
 def process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k):
+    # spot_load_path = get_contracts_in_path()
+    # spot_prices_dict = load_contracts_from_json(spot_load_path)
+
+    # list_load_path = get_contracts_in_path()
+    # list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
+
+    # output_path = get_csv_output_path()
+    # save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
+
     test_contract_list = list_of_uniform_k_lists[k]
     s_t_values = []
     s_t_minus_k_values = []
@@ -223,22 +233,27 @@ def process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, ou
             y_values.append(y)
             x_values.append(x)
 
+    print("\nProcessing Data for Uniform Calendar k = " + str(k))
+    # print("\ns_t_values:")
+    # print(s_t_values)
+    # print("\ns_t_minus_k_values:")
+    # print(s_t_minus_k_values)
+    # print("\nf_t_t_minus_k_values:")
+    # print(f_t_t_minus_k_values)
 
-    print("\ns_t_values:")
-    print(s_t_values)
-    print("\ns_t_minus_k_values:")
-    print(s_t_minus_k_values)
-    print("\nf_t_t_minus_k_values:")
-    print(f_t_t_minus_k_values)
-
-    print("\ny_values:") # "ln(St) - ln(St-k)"
-    print(y_values)
-    print("\nx_values:") # "ln(Ft,t-k) - ln(St-k)"
-    print(x_values)
+    # print("\ny_values:") # "ln(St) - ln(St-k)"
+    # print(y_values)
+    # print("\nx_values:") # "ln(Ft,t-k) - ln(St-k)"
+    # print(x_values)
 
     # test_contracts_save_path = get_contracts_out_path()
     # save_contracts_to_json(test_contract_list, test_contracts_save_path) # test_contract_list.json
-    print()
+    
+    output_file_name = "uniform_calendar_k_" + str(k) + ".csv"
+    output_path = os.path.join(output_dir_path, output_file_name)
+    print("Saving output to: " + output_path)
+    save_regression_data_to_csv(y_values, x_values, output_path)
+
 
 # Creating JSON from CSV:
 # # Example usage:
@@ -303,12 +318,13 @@ spot_prices_dict = load_contracts_from_json(spot_load_path)
 list_load_path = get_contracts_in_path()
 list_of_uniform_k_lists = load_contracts_from_json(list_load_path)
 
+# output_path = get_csv_output_path()
+# save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
+output_dir_path = get_dir()
+# print(get_dir())
+
 k = 63
 
-
-output_path = get_csv_output_path()
-save_regression_data_to_csv(y_values, x_values, output_path) # uniform_calendar_k_63.csv
-
-# print(get_dir())
+process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k)
 
 print("done")

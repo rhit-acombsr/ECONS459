@@ -283,15 +283,19 @@ def get_output_results_path():
     path = filedialog.asksaveasfilename(filetypes=filetypes)
     return path
 
-k = 3
-max_lags = 2*(k-1)
+def k_to_max_lags(k):
+    return max(1, round(((k-30) / 30)*2))
+
+k = 63
+max_lags = k_to_max_lags(k)
+# max_lags = 2*(k-1)
 # max_lags = 1
-# data = get_data()
-data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil3\\m-1\\Reproduction of Results - Reproduced oil_3 h=m01 spot=oil_1.csv")
+data = get_data()
+# data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil3\\m-1\\Reproduction of Results - Reproduced oil_3 h=m01 spot=oil_1.csv")
 # data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil6\\m-1\\Reproduction of Results - Reproduced oil_6 with oil_1 as Spot and h=m-1.csv")
 # data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil12\\m-1\\Reproduction of Results - Reproduced oil_12 with oil1 as Spot and h=m-1.csv")
 
-# output_results_path = get_output_results_path()
+output_results_path = get_output_results_path()
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_minimalist_no_constant_maxlags_"+str(max_lags)+".txt"
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_minimalist_no_constant_maxlags_"+str(max_lags)+".txt"
 
@@ -299,7 +303,7 @@ data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Tech
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_minimalist_maxlags_"+str(max_lags)+".txt"
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil12_m-1_oil_1_as_spot_minimalist_maxlags_"+str(max_lags)+".txt"
 
-output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
+# output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil12_m-1_oil_1_as_spot_wald_maxlags_"+str(max_lags)+".txt"
 
