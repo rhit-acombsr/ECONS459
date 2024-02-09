@@ -203,7 +203,7 @@ def tabulate_results(input_dir_path, output_csv_path):
         a = loaded_dictionary["Parameter Results"][0]
         b = loaded_dictionary["Parameter Results"][1]
         t_test_results_a = loaded_dictionary["T-Test Results"][0]
-        t_test_results_a = loaded_dictionary["T-Test Results"][1]
+        t_test_results_b = loaded_dictionary["T-Test Results"][1]
 
         Uniform_Calendar_k.append(int(loaded_dictionary["Uniform Calendar k"]))
         coef_a.append(float(a["coef"]))
@@ -287,7 +287,8 @@ def add_significance_levels(input_path, output_path):
     data['significance(b)'] = data['P>|z|(b)'].apply(get_significance)
     data['significance(wald)'] = data['Wald Test Result'].apply(get_significance)
     # Add significance levels for the T-test results
-    data['significance(t)'] = data['T-Test P>|t|'].apply(get_significance)
+    data['significance(t_a)'] = data['T-Test P>|t|(a)'].apply(get_significance)
+    data['significance(t_b)'] = data['T-Test P>|t|(b)'].apply(get_significance)
     
     # Save the updated dataframe to a new CSV file
     data.to_csv(output_path, index=False)
@@ -324,9 +325,9 @@ def add_significance_levels(input_path, output_path):
 # run_regression_and_wald_test_json(data, k, output_results_path_json)
 
 # Next step:
-input_dir_path = get_dir()
-output_dir_path = get_dir()
-run_all_regressions(input_dir_path, output_dir_path)
+# input_dir_path = get_dir()
+# output_dir_path = get_dir()
+# run_all_regressions(input_dir_path, output_dir_path)
 
 # Next step:
 # input_path = get_json_in_path()
@@ -442,8 +443,8 @@ run_all_regressions(input_dir_path, output_dir_path)
 # tabulate_results(input_dir_path, output_csv_path)
 
 # Next step:
-# input_csv_path = get_input_path_csv()
-# output_csv_path = get_output_path_csv()
-# add_significance_levels(input_csv_path, output_csv_path)
+input_csv_path = get_input_path_csv()
+output_csv_path = get_output_path_csv()
+add_significance_levels(input_csv_path, output_csv_path)
 
 print("All done!")
