@@ -256,6 +256,8 @@ def add_significance_levels(input_path, output_path):
     data['significance(a)'] = data['P>|z|(a)'].apply(get_significance)
     data['significance(b)'] = data['P>|z|(b)'].apply(get_significance)
     data['significance(wald)'] = data['Wald Test Result'].apply(get_significance)
+    # Add significance levels for the T-test results
+    data['significance(t)'] = data['T-Test P>|t|'].apply(get_significance)
     
     # Save the updated dataframe to a new CSV file
     data.to_csv(output_path, index=False)
@@ -264,6 +266,7 @@ def add_significance_levels(input_path, output_path):
 # input_path = 'path/to/your/inputs.csv'
 # output_path = 'path/to/your/updated_outputs.csv'
 # add_significance_levels(input_path, output_path)
+
 
 
 # Next step:
@@ -404,13 +407,13 @@ def add_significance_levels(input_path, output_path):
 # df.to_csv(output_path, index=False)
 
 # Next step:
-input_dir_path = get_dir()
-output_csv_path = get_output_path_csv()
-tabulate_results(input_dir_path, output_csv_path)
+# input_dir_path = get_dir()
+# output_csv_path = get_output_path_csv()
+# tabulate_results(input_dir_path, output_csv_path)
 
 # Next step:
-# input_csv_path = get_input_path_csv()
-# output_csv_path = get_output_path_csv()
-# add_significance_levels(input_csv_path, output_csv_path)
+input_csv_path = get_input_path_csv()
+output_csv_path = get_output_path_csv()
+add_significance_levels(input_csv_path, output_csv_path)
 
 print("All done!")
