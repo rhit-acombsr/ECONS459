@@ -171,6 +171,13 @@ def tabulate_results(input_dir_path, output_csv_path):
     CI_Lower_b = []
     CI_Upper_b = []
     Wald_Test_Result = []
+    # New T-test results lists
+    T_Test_coef = []
+    T_Test_std_err = []
+    T_Test_t = []
+    T_Test_P = []
+    T_Test_CI_Lower = []
+    T_Test_CI_Upper = []
 
     for k in range(125)[1:]:
         input_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
@@ -179,6 +186,7 @@ def tabulate_results(input_dir_path, output_csv_path):
 
         a = loaded_dictionary["Parameter Results"][0]
         b = loaded_dictionary["Parameter Results"][1]
+        t_test_results = loaded_dictionary["T-Test Results"]  # Assuming this is how you stored it
 
         Uniform_Calendar_k.append(int(loaded_dictionary["Uniform Calendar k"]))
         coef_a.append(float(a["coef"]))
@@ -195,6 +203,14 @@ def tabulate_results(input_dir_path, output_csv_path):
         CI_Upper_b.append(float(b["95% CI"]["Upper"]))
         Wald_Test_Result.append(float(loaded_dictionary["Wald Test Result"]))
 
+        # Append new T-test data
+        T_Test_coef.append(t_test_results["coef"])
+        T_Test_std_err.append(t_test_results["std err"])
+        T_Test_t.append(t_test_results["t"])
+        T_Test_P.append(t_test_results["P>|t|"])
+        T_Test_CI_Lower.append(t_test_results["95% CI Lower"])
+        T_Test_CI_Upper.append(t_test_results["95% CI Upper"])
+
     df = pd.DataFrame({
         'Uniform Calendar k':Uniform_Calendar_k,
         'coef(a)':coef_a,
@@ -209,7 +225,14 @@ def tabulate_results(input_dir_path, output_csv_path):
         'P>|z|(b)':P_greater_z_b,
         '95% CI Lower(b)':CI_Lower_b,
         '95% CI Upper(b)':CI_Upper_b,
-        'Wald Test Result':Wald_Test_Result
+        'Wald Test Result':Wald_Test_Result,
+        # New T-test result columns
+        'T-Test coef': T_Test_coef,
+        'T-Test std err': T_Test_std_err,
+        'T-Test t': T_Test_t,
+        'T-Test P>|t|': T_Test_P,
+        'T-Test 95% CI Lower': T_Test_CI_Lower,
+        'T-Test 95% CI Upper': T_Test_CI_Upper,
     })
 
     df.to_csv(output_csv_path, index=False)
@@ -268,9 +291,9 @@ def add_significance_levels(input_path, output_path):
 # run_regression_and_wald_test_json(data, k, output_results_path_json)
 
 # Next step:
-input_dir_path = get_dir()
-output_dir_path = get_dir()
-run_all_regressions(input_dir_path, output_dir_path)
+# input_dir_path = get_dir()
+# output_dir_path = get_dir()
+# run_all_regressions(input_dir_path, output_dir_path)
 
 # Next step:
 # input_path = get_json_in_path()
@@ -381,9 +404,9 @@ run_all_regressions(input_dir_path, output_dir_path)
 # df.to_csv(output_path, index=False)
 
 # Next step:
-# input_dir_path = get_dir()
-# output_csv_path = get_output_path_csv()
-# tabulate_results(input_dir_path, output_csv_path)
+input_dir_path = get_dir()
+output_csv_path = get_output_path_csv()
+tabulate_results(input_dir_path, output_csv_path)
 
 # Next step:
 # input_csv_path = get_input_path_csv()
