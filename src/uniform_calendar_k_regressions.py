@@ -66,11 +66,16 @@ def run_regression_and_wald_test(data, k, output_file_path):
     # Perform the Wald test
     wald_test_result = model.wald_test(hypothesis)
     
+    # Also perform t test for hypothesis (NEW)
+    tOut = str(model.t_test(hypothesis).summary())
+
     # Save results
     with open(output_file_path, 'w') as file:
         file.write("Results for Uniform Calendar k = " + str(k)+":\n")
         file.write(("_"*89)+"\n")
         file.write(model.summary().as_text())
+        file.write('\n\n'+(89*'_')+'\nT-Test:\n'+(89*'_')+'\n')
+        file.write(tOut)
         file.write("\n\nWald Test Result (p-value for joint hypothesis a=0 and b=1):\n")
         file.write(str(wald_test_result.pvalue))
     
@@ -87,6 +92,10 @@ def run_regression_and_wald_test_json(data, k, output_json_path):
     # Perform the Wald test with the specified hypothesis
     hypothesis = '(const = 0), (ln(Ft,t-k) - ln(St-k) = 1)'
     wald_test_result = model.wald_test(hypothesis)
+
+    # Perform the T-test for the hypothesis
+    t_test_result = model.t_test(hypothesis)
+    print(str(type(t_test_result)))
 
     # Convert model attributes to serializable formats
     ci = model.conf_int().applymap(float)  # Convert confidence intervals to float
@@ -109,7 +118,15 @@ def run_regression_and_wald_test_json(data, k, output_json_path):
                 }
             } for name in model.params.index
         ],
-        "Wald Test Result": float(wald_test_result.pvalue)  # Ensure p-value is float
+        "Wald Test Result": float(wald_test_result.pvalue),  # Ensure p-value is float
+        "T-Test Results": {
+            "coef": float(t_test_result.effect[0]),
+            "std err": float(t_test_result.sd[0]),
+            "t": float(t_test_result.tvalue[0]),
+            "P>|t|": float(t_test_result.pvalue[0]),
+            "95% CI Lower": float(t_test_result.conf_int()[0][0]),
+            "95% CI Upper": float(t_test_result.conf_int()[0][1])
+        }
     }
 
     # Serialize to JSON, ensuring all values are serializable
@@ -226,7 +243,6 @@ def add_significance_levels(input_path, output_path):
 # add_significance_levels(input_path, output_path)
 
 
-
 # Next step:
 # k = 63
 # data = get_data()
@@ -236,20 +252,20 @@ def add_significance_levels(input_path, output_path):
 # run_regression_and_wald_test_json(data, k, output_results_path_json)
 
 # Next step:
-# k = 63
-# input_dir_path = get_dir()
-# input_file_name = "uniform_calendar_k_" + str(k) + ".csv"
-# input_path = os.path.join(input_dir_path, input_file_name)
-# data = pd.read_csv(input_path)
+k = 63
+input_dir_path = get_dir()
+input_file_name = "uniform_calendar_k_" + str(k) + ".csv"
+input_path = os.path.join(input_dir_path, input_file_name)
+data = pd.read_csv(input_path)
 
-# output_dir_path = get_dir()
-# output_txt_file_name = "uniform_calendar_k_" + str(k) + ".txt"
-# output_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
-# output_results_path_txt = os.path.join(output_dir_path, output_txt_file_name)
-# output_results_path_json = os.path.join(output_dir_path, output_json_file_name)
+output_dir_path = get_dir()
+output_txt_file_name = "uniform_calendar_k_" + str(k) + ".txt"
+output_json_file_name = "uniform_calendar_k_" + str(k) + ".json"
+output_results_path_txt = os.path.join(output_dir_path, output_txt_file_name)
+output_results_path_json = os.path.join(output_dir_path, output_json_file_name)
 
-# run_regression_and_wald_test(data, k, output_results_path_txt)
-# run_regression_and_wald_test_json(data, k, output_results_path_json)
+run_regression_and_wald_test(data, k, output_results_path_txt)
+run_regression_and_wald_test_json(data, k, output_results_path_json)
 
 # Next step:
 # input_dir_path = get_dir()
@@ -370,8 +386,8 @@ def add_significance_levels(input_path, output_path):
 # tabulate_results(input_dir_path, output_csv_path)
 
 # Next step:
-input_csv_path = get_input_path_csv()
-output_csv_path = get_output_path_csv()
-add_significance_levels(input_csv_path, output_csv_path)
+# input_csv_path = get_input_path_csv()
+# output_csv_path = get_output_path_csv()
+# add_significance_levels(input_csv_path, output_csv_path)
 
 print("All done!")
