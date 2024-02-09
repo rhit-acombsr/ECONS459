@@ -1,30 +1,30 @@
-Results for Uniform Calendar k = 63:
+Results for Uniform Calendar k = 83:
 _________________________________________________________________________________________
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:      ln(St) - ln(St-k)   R-squared:                       0.005
-Model:                            OLS   Adj. R-squared:                 -0.003
-Method:                 Least Squares   F-statistic:                    0.3777
-Date:                Fri, 09 Feb 2024   Prob (F-statistic):              0.540
-Time:                        09:39:18   Log-Likelihood:                 19.072
-No. Observations:                 130   AIC:                            -34.14
-Df Residuals:                     128   BIC:                            -28.41
+Dep. Variable:      ln(St) - ln(St-k)   R-squared:                       0.247
+Model:                            OLS   Adj. R-squared:                  0.240
+Method:                 Least Squares   F-statistic:                     74.67
+Date:                Fri, 09 Feb 2024   Prob (F-statistic):           3.95e-14
+Time:                        09:39:18   Log-Likelihood:                 5.4321
+No. Observations:                 116   AIC:                            -6.864
+Df Residuals:                     114   BIC:                            -1.357
 Df Model:                           1                                         
 Covariance Type:                  HAC                                         
 =========================================================================================
                             coef    std err          z      P>|z|      [0.025      0.975]
 -----------------------------------------------------------------------------------------
-const                    -0.0130      0.019     -0.685      0.493      -0.050       0.024
-ln(Ft,t-k) - ln(St-k)     0.4074      0.663      0.615      0.539      -0.892       1.707
+const                    -0.0110      0.028     -0.399      0.690      -0.065       0.043
+ln(Ft,t-k) - ln(St-k)     2.1270      0.246      8.641      0.000       1.645       2.609
 ==============================================================================
-Omnibus:                      169.206   Durbin-Watson:                   1.635
-Prob(Omnibus):                  0.000   Jarque-Bera (JB):             7918.360
-Skew:                          -4.762   Prob(JB):                         0.00
-Kurtosis:                      40.029   Cond. No.                         27.7
+Omnibus:                      133.544   Durbin-Watson:                   1.276
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             3531.952
+Skew:                          -3.913   Prob(JB):                         0.00
+Kurtosis:                      28.875   Cond. No.                         16.1
 ==============================================================================
 
 Notes:
-[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 2 lags and without small sample correction
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 4 lags and without small sample correction
 
 _________________________________________________________________________________________
 T-Test:
@@ -33,9 +33,9 @@ ________________________________________________________________________________
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-c0            -0.0130      0.019     -0.685      0.493      -0.050       0.024
-c1             0.4074      0.663     -0.894      0.371      -0.892       1.707
+c0            -0.0110      0.028     -0.399      0.690      -0.065       0.043
+c1             2.1270      0.246      4.579      0.000       1.645       2.609
 ==============================================================================
 
 Wald Test Result (p-value for joint hypothesis a=0 and b=1):
-0.6225371787681128
+1.227366194244577e-05
