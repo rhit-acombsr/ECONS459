@@ -311,8 +311,8 @@ output_results_path = get_output_results_path()
 # run_regression_no_constant_and_test(data, max_lags, output_results_path)
 # run_regression_with_dynamic_lags_and_wald_test(data, k, output_results_path)
 # run_regression_with_constant_and_calculate_wald(data, k, output_results_path)
-# run_regression_and_wald_test(data, k, output_results_path)
-run_regression(data, max_lags)
+run_regression_and_wald_test(data, k, output_results_path)
+# run_regression(data, max_lags)
 
 
 # k = 63
