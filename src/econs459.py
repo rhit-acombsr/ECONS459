@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 import os
 from statsmodels.stats.diagnostic import het_white
+from statsmodels.tsa.stattools import adfuller
 from tkinter import filedialog
 
 def read_csv_files():
@@ -278,6 +279,39 @@ def run_regression_and_wald_test(data, K, output_file_path):
 # run_regression_and_wald_test(data, K, "output.txt")
 
 
+def estimate_unit_roots(df):
+    """
+    Estimates the number of unit roots in a time series contained within a DataFrame.
+
+    Parameters:
+    - df: A pandas DataFrame with a single column containing the time series data.
+
+    Returns:
+    - An integer representing the estimated number of unit roots in the time series.
+    """
+    series = df.iloc[:, 0]  # Assuming the time series is in the first column
+    differencing_count = 0
+
+    while True:
+        adf_test_result = adfuller(series, autolag='AIC')
+        p_value = adf_test_result[1]
+
+        # If the p-value is less than 0.05, we reject the null hypothesis (no unit root)
+        if p_value < 0.05:
+            break
+        else:
+            # Apply differencing and increment the count
+            series = series.diff().dropna()
+            differencing_count += 1
+
+    return differencing_count
+
+# Example usage:
+# Assuming `df` is your DataFrame with the time series data
+# unit_roots = estimate_unit_roots(df)
+# print(f"Estimated number of unit roots: {unit_roots}")
+
+
 def get_output_results_path():
     filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
     path = filedialog.asksaveasfilename(filetypes=filetypes)
@@ -288,14 +322,14 @@ def k_to_max_lags(k):
 
 k = 3
 # max_lags = k_to_max_lags(k)
-max_lags = 2*(k-1)
+# max_lags = 2*(k-1)
 # max_lags = 1
 data = get_data()
 # data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil3\\m-1\\Reproduction of Results - Reproduced oil_3 h=m01 spot=oil_1.csv")
 # data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil6\\m-1\\Reproduction of Results - Reproduced oil_6 with oil_1 as Spot and h=m-1.csv")
 # data = pd.read_csv("C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\data\\reproducing_key_paper\\_with oil_1 as spot\\oil12\\m-1\\Reproduction of Results - Reproduced oil_12 with oil1 as Spot and h=m-1.csv")
 
-output_results_path = get_output_results_path()
+# output_results_path = get_output_results_path()
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil3_m-1_oil_1_as_spot_minimalist_no_constant_maxlags_"+str(max_lags)+".txt"
 # output_results_path = "C:\\Users\\acombsr\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\GitHub\\ECONS459\\results\\01-09-24\\Regression_Output-oil6_m-1_oil_1_as_spot_minimalist_no_constant_maxlags_"+str(max_lags)+".txt"
 
@@ -311,9 +345,11 @@ output_results_path = get_output_results_path()
 # run_regression_no_constant_and_test(data, max_lags, output_results_path)
 # run_regression_with_dynamic_lags_and_wald_test(data, k, output_results_path)
 # run_regression_with_constant_and_calculate_wald(data, k, output_results_path)
-run_regression_and_wald_test(data, k, output_results_path)
+# run_regression_and_wald_test(data, k, output_results_path)
 # run_regression(data, max_lags)
 
+unit_roots = estimate_unit_roots(data)
+print(f"Estimated number of unit roots: {unit_roots}")
 
 # k = 63
 # max_lags = 2*(k-1)
