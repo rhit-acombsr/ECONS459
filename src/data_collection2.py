@@ -99,6 +99,7 @@ def get_all_data():
         response = get_calendar_for(year)
         data_out = get_data(response)
         save_data(data_out,str(year))
+        print("saved data for four-year period starting " + str(year))
         time.sleep(1)
 
 def open_data():
@@ -134,16 +135,9 @@ def open_data():
     # csv_filename
     return
 
-# response = get_calendar_for(2020)
-# data_out = get_data(response)
-# print(data_out)
-# save_as_html(response, "test.html")
+response = get_calendar_for(2020)
+data_out = get_data(response)
+print(data_out)
+save_as_html(response, "test.html")
 
 # get_all_data()
-
-# filetypes = (("MIDI files", "*.mid"), ("All files", "*.*"))
-# file_name = filedialog.askopenfilename(filetypes=filetypes)
-# with open(file_name, mode='rb') as file:
-#     file_content = file.read()
-#     if file_name is None:
-#         return

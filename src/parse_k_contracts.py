@@ -260,6 +260,8 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 
 # Creating JSON from CSV:
 # # Example usage:
+
+# Step 14
 # csv_path = get_data_path()
 # contracts_list = process_futures_data(csv_path)
 # # print(str(type(contracts_list))) #list
@@ -272,6 +274,7 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 # list_save_path = get_contracts_out_path() #saved_contracts_list.json
 # save_contracts_to_json(updated_contracts_list,list_save_path)
 
+# Step 15
 # Filtering for only contracts with expiration date observations:
 # list_load_path = get_contracts_in_path()
 # loaded_contracts_list = load_contracts_from_json(list_load_path)
@@ -286,6 +289,7 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 # list_save_path = get_contracts_out_path() # contracts_with_expiration_observations.json
 # save_contracts_to_json(contracts_with_expiration_observations,list_save_path)
 
+# Step 16
 # Next step: ensure we even still have enough contracts to do what we need to here.
 # list_load_path = get_contracts_in_path()
 # loaded_contracts_list = load_contracts_from_json(list_load_path)
@@ -294,6 +298,7 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 # # contracts_with_expiration_observations.json = 140
 # # good enough for government work!
 
+# Step 17
 # Next step: create list of contracts lists filtered for every value of K 
 # list_load_path = get_contracts_in_path()
 # loaded_contracts_list = load_contracts_from_json(list_load_path)
@@ -307,6 +312,7 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 # save_contracts_to_json(list_of_uniform_k_lists,list_save_path) # list_of_uniform_k_lists.json
 # print(list_of_lengths)
 
+# Step 18
 # Next step: load in spot data as dictionary
 # spot_prices_csv_path = get_data_path()
 # spot_prices_dict = read_spot_prices_from_csv(spot_prices_csv_path)
@@ -314,6 +320,7 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 # spot_save_path = get_contracts_out_path()
 # save_contracts_to_json(spot_prices_dict, spot_save_path) # spot_dict.json
 
+# Step 19
 # Next step:
 # spot_load_path = get_contracts_in_path()
 # spot_prices_dict = load_contracts_from_json(spot_load_path)
@@ -330,6 +337,7 @@ def process_regression_input_for_all_k_values(spot_prices_dict, list_of_uniform_
 
 # process_regression_input_for_k(spot_prices_dict, list_of_uniform_k_lists, output_dir_path, k)
 
+# Step 20
 # Next step:
 # spot_load_path = get_contracts_in_path()
 # spot_prices_dict = load_contracts_from_json(spot_load_path)
